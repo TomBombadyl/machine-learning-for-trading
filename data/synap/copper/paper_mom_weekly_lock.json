@@ -1,0 +1,34 @@
+{
+  "status": "NOT_A_PROMOTE",
+  "promote": false,
+  "research_only": true,
+  "paper_only": true,
+  "asset": "HG",
+  "venue": "COMEX",
+  "candidate_id": "paper_MOM_ONLY_weekly",
+  "model_family": "MOM_ONLY",
+  "frame": "mean_reversion",
+  "horizon": "weekly",
+  "signal_cadence": "weekly",
+  "thresholds": {
+    "long": 0.6,
+    "short": 0.4
+  },
+  "risk": {
+    "vol_target": true,
+    "dd_halt": true
+  },
+  "kill_criteria": {
+    "lookback_weeks": 26,
+    "max_drawdown_26w": 0.15,
+    "sum_net_lt": -0.05,
+    "lose_to_mr_consecutive_reads": 2
+  },
+  "evidence_owner": "FinPredict Engine",
+  "free_only": true,
+  "notes": [
+    "Paper-only MOM_ONLY weekly MR-framed threshold lock.",
+    "Never promote from scripts or from this JSON alone.",
+    "TradingView HG_MOM_ONLY_Weekly.pine is a cousin approximation, not Engine evidence."
+  ]
+}

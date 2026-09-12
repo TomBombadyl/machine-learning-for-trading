@@ -40,3 +40,7 @@ them; opening a pull request can, and the failure tells you which:
 > Internal registry-maintenance tooling (backfills, schema migrations, one-off data
 > repairs) is intentionally **not** in this repository — it lives in the separate
 > maintainer workspace.
+
+Fork-local FinPredict / Synap Garden copper research scripts live in
+[`scripts/synap_copper/`](synap_copper/) (**NOT A PROMOTE**; additive;
+do not use them as a chapter reader path).
