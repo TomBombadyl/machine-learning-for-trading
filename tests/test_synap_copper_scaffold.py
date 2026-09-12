@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import importlib.util
 import json
+import sys
 from pathlib import Path
 
 import pytest
@@ -98,9 +99,11 @@ hline(thrShort, "thrShort", color=color.red)
 
 def _load_script(name: str):
     path = SCRIPTS / f"{name}.py"
-    spec = importlib.util.spec_from_file_location(f"synap_copper_{name}", path)
+    mod_name = f"synap_copper_{name}"
+    spec = importlib.util.spec_from_file_location(mod_name, path)
     assert spec is not None and spec.loader is not None
     module = importlib.util.module_from_spec(spec)
+    sys.modules[mod_name] = module
     spec.loader.exec_module(module)
     return module
 

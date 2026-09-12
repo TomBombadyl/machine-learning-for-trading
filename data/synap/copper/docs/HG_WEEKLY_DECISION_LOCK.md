@@ -56,7 +56,7 @@ and not a rewrite of this lock.
 
 ## Explicit non-goals
 
-- Do **not** promote this lock to live or to a larger book from docs,
+- **Never promote** this lock to live or to a larger book from docs,
   scripts, or TradingView.
 - Do **not** treat a TV backtest as Engine evidence.
 - Do **not** relax thresholds, drop `vol_target` / `dd_halt`, or edit
