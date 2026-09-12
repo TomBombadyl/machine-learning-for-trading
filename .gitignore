@@ -100,6 +100,10 @@ data/**/*.zip
 !data/equities/market/sp500/sp500.csv
 !data/equities/market/sp500/daily_bars.parquet
 
+# Synap Garden / FinPredict research contracts (text only — never parquet/binaries).
+# data/**/*.json ignores downloaded datasets; the paper lock is a committed contract.
+!data/synap/copper/paper_mom_weekly_lock.json
+
 # Caches
 data/**/__pycache__/
 data/**/.cache/
