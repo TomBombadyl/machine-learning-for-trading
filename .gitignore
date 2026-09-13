@@ -101,8 +101,11 @@ data/**/*.zip
 !data/equities/market/sp500/daily_bars.parquet
 
 # Synap Garden / FinPredict research contracts (text only — never parquet/binaries).
-# data/**/*.json ignores downloaded datasets; the paper lock is a committed contract.
+# data/**/*.json ignores downloaded datasets; paper lock JSON is a committed contract.
 !data/synap/copper/paper_mom_weekly_lock.json
+# Oil is not paper-locked yet. Whitelist the same paper_*_weekly_lock.json
+# pattern so a future Engine lock can be committed without lifting data/**/*.json.
+!data/synap/oil/paper_*_weekly_lock.json
 
 # Caches
 data/**/__pycache__/

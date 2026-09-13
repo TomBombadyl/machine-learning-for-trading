@@ -41,6 +41,8 @@ them; opening a pull request can, and the failure tells you which:
 > repairs) is intentionally **not** in this repository — it lives in the separate
 > maintainer workspace.
 
-Fork-local FinPredict / Synap Garden copper research scripts live in
-[`scripts/synap_copper/`](synap_copper/) (**NOT A PROMOTE**; additive;
-do not use them as a chapter reader path).
+Fork-local FinPredict / Synap Garden research scripts live in
+[`scripts/synap_copper/`](synap_copper/) and
+[`scripts/synap_oil/`](synap_oil/) (**NOT A PROMOTE**; additive;
+do not use them as a chapter reader path). Oil is research-scaffold
+only and is not paper-locked.
