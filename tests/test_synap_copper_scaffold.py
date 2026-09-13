@@ -98,13 +98,24 @@ hline(thrShort, "thrShort", color=color.red)
 
 
 def _load_script(name: str):
+    """Load a synap_copper script without inheriting oil's ``contract`` cache.
+
+    Oil and copper both import a sibling module named ``contract``. Pytest
+    runs both scaffold files in one process; drop the generic cache and
+    put this pack first on ``sys.path`` so copper sees PANEL_DAILY / LOCK_PATH.
+    """
     path = SCRIPTS / f"{name}.py"
     mod_name = f"synap_copper_{name}"
     spec = importlib.util.spec_from_file_location(mod_name, path)
     assert spec is not None and spec.loader is not None
     module = importlib.util.module_from_spec(spec)
     sys.modules[mod_name] = module
+    script_dir = str(SCRIPTS)
+    sys.modules.pop("contract", None)
+    sys.path = [p for p in sys.path if p != script_dir]
+    sys.path.insert(0, script_dir)
     spec.loader.exec_module(module)
+    sys.modules.pop("contract", None)
     return module
 
 

@@ -46,13 +46,26 @@ SECRET_MARKERS = ("EIA_API_KEY", "API_KEY=", "SECRET=", "BEGIN PRIVATE KEY")
 
 
 def _load_script(name: str):
+    """Load a synap_oil script without leaving ``contract`` cached for copper.
+
+    Both packs do ``from contract import ...`` after inserting their own
+    directory on ``sys.path``. A shared ``sys.modules['contract']`` entry
+    from oil then makes copper scripts import the oil module (PANEL_WEEKLY
+    instead of PANEL_DAILY, no LOCK_PATH). CI runs both files in one
+    pytest process, so isolate the generic name on every load.
+    """
     path = SCRIPTS / f"{name}.py"
     mod_name = f"synap_oil_{name}"
     spec = importlib.util.spec_from_file_location(mod_name, path)
     assert spec is not None and spec.loader is not None
     module = importlib.util.module_from_spec(spec)
     sys.modules[mod_name] = module
+    script_dir = str(SCRIPTS)
+    sys.modules.pop("contract", None)
+    sys.path = [p for p in sys.path if p != script_dir]
+    sys.path.insert(0, script_dir)
     spec.loader.exec_module(module)
+    sys.modules.pop("contract", None)
     return module
 
 
@@ -227,6 +240,30 @@ def test_load_paper_lock_rejects_promote_true(tmp_path: Path) -> None:
     )
     with pytest.raises(ValueError, match="NOT-A-PROMOTE"):
         contract.load_paper_lock(bad)
+
+
+def test_oil_script_load_does_not_shadow_copper_contract() -> None:
+    """Oil then copper in one process — the pairing CI actually runs."""
+    oil = _load_script("multi_horizon_long_short_scorecard")
+    assert oil.build_scorecard()["asset"] == "CL_BRENT"
+
+    copper_dir = REPO / "scripts" / "synap_copper"
+    path = copper_dir / "multi_horizon_long_short_scorecard.py"
+    spec = importlib.util.spec_from_file_location(
+        "synap_copper_mh_after_oil", path
+    )
+    assert spec is not None and spec.loader is not None
+    module = importlib.util.module_from_spec(spec)
+    sys.modules[spec.name] = module
+    sys.modules.pop("contract", None)
+    sys.path = [p for p in sys.path if p != str(copper_dir)]
+    sys.path.insert(0, str(copper_dir))
+    spec.loader.exec_module(module)
+    sys.modules.pop("contract", None)
+    report = module.build_scorecard()
+    ids = [row["candidate_id"] for row in report["candidates"]]
+    assert "daily_63d_LME" in ids
+    assert "paper_MOM_ONLY_weekly" in ids
 
 
 def test_scripts_main_exits_zero(tmp_path: Path, capsys: pytest.CaptureFixture[str]) -> None:
