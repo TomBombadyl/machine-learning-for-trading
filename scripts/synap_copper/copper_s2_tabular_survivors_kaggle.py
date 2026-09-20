@@ -482,4 +482,5 @@ def main() -> int:
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    # Return without SystemExit so Kaggle/IPython does not warn on success.
+    main()

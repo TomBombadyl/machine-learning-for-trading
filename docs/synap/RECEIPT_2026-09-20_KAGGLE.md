@@ -159,6 +159,24 @@ Next offline: treat graph topology columns as research features only
 (already IC survivors) on the frozen Friday frame; prefer Experiment A
 COT+MOM / S2 v1 logistic lane. GAT hybrid stays SHELF under the S2 gate.
 
+### S2 tabular survivors (`copper_s2_tabular_survivors_v0`) → **CONTINUE** (`promote=false`)
+
+Operator receipt 2026-09-20 (Kaggle `SystemExit 0` — success, not a
+crash; IPython exit warning is cosmetic). Same panel sha
+`35f1fce22bca…`, `matches_v0`. Logistic only; no GAT. v1 WF gate
+(step=26, last-5 ≥3/5). Seeds 42–46.
+
+- **seeds_continue=5/5** floor=3
+- `arm_continue_counts`: shortlist **5**, shortlist_graph **5**,
+  shortlist_graph_cot **5**
+- `no_gat=True`
+
+All three challenger arms cleared the S2 gate vs MOM on every seed.
+Graph + COT stacks did not break the shortlist CONTINUE. Still **not**
+a paper lock. Do not flip 0.60/0.40. Do not reopen TinyGAT. Optional
+next: download metrics for fold_net / sum_net deltas (graph vs
+shortlist) before Engine freezes any promote-adjacent hyp.
+
 ### Paper lock (unchanged)
 
 `data/synap/copper/paper_mom_weekly_lock.json` +
