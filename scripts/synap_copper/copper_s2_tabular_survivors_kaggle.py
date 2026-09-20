@@ -409,7 +409,7 @@ def main() -> int:
             f"[s2tab] n_panel={len(featured)} seeds={len(SEEDS)} step={STEP} "
             f"arm_sizes={ {key: len(val) for key, val in arms.items()} } "
             f"graph={graph_cols} cot={cot_cols} "
-            f"(per-arm finite masks; nan_to_num)",
+            f"(pair-mask vs MOM; nan_to_num)",
             flush=True,
         )
         floor = family_pass_floor(len(SEEDS))
@@ -487,30 +487,11 @@ def main() -> int:
         "n_seeds": len(SEEDS),
         "verdict": family,
         "note": note,
-    }
-    memo = {
-        "verdict": family,
-        "promote": False,
-        "version": VERSION,
-        "panel_sha12": panel_sha[:12],
-        "sha_note": panel_meta["sha_note"],
-        "n_seeds_continue": metrics["n_seeds_continue"],
-        "n_seeds": len(SEEDS),
-        "arm_continue_counts": arm_continue_counts,
-        "note": note,
-        "seed_verdicts": [
-            {
-                "seed": row.get("seed"),
-                "verdict": row.get("verdict"),
-                "best_continue_arm": row.get("best_continue_arm"),
-                "arm_verdicts": row.get("arm_verdicts"),
-            }
-            for row in seed_rows
-        ],
-        "paths": {
-            "metrics": str(OUT_DIR / "copper_s2_tabular_survivors_metrics.json"),
-            "memo": str(OUT_DIR / "copper_s2_tabular_survivors_memo.json"),
-        },
+        "compare_note": (
+            "Each challenger CONTINUE uses MOM scored on the same finite "
+            "mask as that challenger. Receipt arms.mom is the densest-pair "
+            "MOM path (usually shortlist_graph_cot mask), for display only."
+        ),
     }
     receipt = (
         f"Verdict: {family} (promote=false) version={VERSION}\n"
