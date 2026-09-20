@@ -1,45 +1,33 @@
 # Handoff — copper S2 tabular survivors (2026-09-20)
 
 **promote=false.** `copper_s2_tabular_survivors_v0` → **CONTINUE** 5/5.
+Metrics reviewed: graph/COT add costed lift; GAT stays closed.
 
-## Not an error
+## Headline numbers (seed-invariant on this frame)
 
-Kaggle showed `SystemExit: 0` plus IPython “To exit: use exit…” —
-that is a **successful** cell exit from `raise SystemExit(main())`,
-not a failed train.
+| Arm | sum_net | maxDD | last-5 |
+| --- | ------: | ----: | -----: |
+| MOM | +0.102 | 0.261 | 3/5 |
+| shortlist | +0.416 | **0.201** | 4/5 |
+| shortlist_graph | +0.494 | 0.232 | 4/5 |
+| shortlist_graph_cot | **+0.682** | 0.232 | 4/5 |
 
-## Stamp
-
-```
-Verdict: CONTINUE (promote=false) version=copper_s2_tabular_survivors_v0
-sha12=35f1fce22bca matches_v0
-seeds_continue=5/5 floor=3
-arm_continue_counts={'shortlist': 5, 'shortlist_graph': 5, 'shortlist_graph_cot': 5}
-no_gat=True
-```
-
-## Family ledger
-
-| Version | Verdict | Note |
-| ------- | ------- | ---- |
-| GNN weak / s2gate / s2ablate | CONTINUE† / KILL / KILL | †weak gate only. TinyGAT **closed** under S2. |
-| `copper_s2_tabular_survivors_v0` | **CONTINUE 5/5** | Logistic shortlist ± graph ± COT. v1 gate. |
-
-Paper MOM lock unchanged.
+- vs shortlist: graph +0.077 sum_net / +3.1pp DD; +COT +0.265 / +3.1pp DD
+- vs MOM: all three CONTINUE; best arm every seed = `shortlist_graph_cot`
+- Seeds 42–46 produced identical paths (logistic + frozen features)
 
 ## Exact next action
 
-1. Download `copper_s2_tabular_survivors_metrics.json` (optional but
-   useful) — compare fold_net / sum_net / maxDD for shortlist vs
-   shortlist_graph vs shortlist_graph_cot.
-2. If graph/COT add lift on costed path without worse DD → keep as
-   tabular feature stack for Engine; still `promote=false`.
-3. If lift is flat → shortlist alone remains the CONTINUE headline.
-4. Do **not** reopen GAT / Cell 2. Do **not** raise trees.
+1. Engine: freeze `shortlist_graph_cot` as the research headline stack
+   on Friday panel `35f1fce22bca…` — still `promote=false`.
+2. Keep shortlist as DD-cleaner ablation twin.
+3. Do **not** reopen TinyGAT / Cell 2 / another GNN paste.
+4. Do **not** flip paper MOM 0.60/0.40.
+5. Optional leftover: S2 v1 robustness script only if Engine wants a
+   second logistic re-stamp — not required for this CONTINUE.
 
 ## Hard do-nots
 
-- Treat CONTINUE as a paper or live promote
-- Flip MOM thresholds
-- Rerun GNN pastes
+- Promote from this card
 - Commit Downloads JSON / parquets
+- Burn Tavily credits (see `API_BUDGET_TAVILY.md`)
