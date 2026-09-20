@@ -13,7 +13,10 @@ agents should read before touching chapters or case studies.
 | [ML4T_COPPER_OWNERSHIP_MAP.md](ML4T_COPPER_OWNERSHIP_MAP.md) | Chapters / case studies / libs → bot; read vs run |
 | [ML4T_EVIDENCE_LOOP_GROUNDING.md](ML4T_EVIDENCE_LOOP_GROUNDING.md) | Which repo artifacts implement each loop stage |
 | [LEARNINGS_FROM_COPPER_V0.md](LEARNINGS_FROM_COPPER_V0.md) | Upgrades implied by copper v0 (SHELF counts, GraphRAG, CU gap) |
-| [NEXT_ML4T_NATIVE_EXPERIMENTS.md](NEXT_ML4T_NATIVE_EXPERIMENTS.md) | Next 3 experiments that reuse ML4T instead of new notebooks |
+| [NEXT_ML4T_NATIVE_EXPERIMENTS.md](NEXT_ML4T_NATIVE_EXPERIMENTS.md) | Next experiments; **C GBM = KILL**; v1 `shortlist_log_h5` = CONTINUE / `promote=false` |
+| [RECEIPT_2026-09-20_KAGGLE.md](RECEIPT_2026-09-20_KAGGLE.md) | Engine ledger: copper v0 KILL, v1 CONTINUE, stretch XGB KILL, oil CONTINUE/KILL |
+| [RESEARCH_HANDOFF_PROMPT.md](RESEARCH_HANDOFF_PROMPT.md) | Paste-ready prompt for the next agent |
+| [GNN_RESOURCE_MAP.md](GNN_RESOURCE_MAP.md) | Cited papers / HF / Kaggle / official data for the copper GNN path |
 
 ## Bot ownership (10 lines)
 

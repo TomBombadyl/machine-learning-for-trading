@@ -54,3 +54,8 @@ continuous). Budget-lifted sources stay Engine-side.
 The evidence loop is owned by the FinPredict Engine. Docs and scripts
 here restate the locked CL+Brent hypothesis. **Never promote from this
 folder or from the scripts alone.**
+
+2026-09-20 Kaggle pointer:
+[`docs/RECEIPT_2026-09-20_KAGGLE.md`](docs/RECEIPT_2026-09-20_KAGGLE.md)
+(full tables in
+[`docs/synap/RECEIPT_2026-09-20_KAGGLE.md`](../../../docs/synap/RECEIPT_2026-09-20_KAGGLE.md)).

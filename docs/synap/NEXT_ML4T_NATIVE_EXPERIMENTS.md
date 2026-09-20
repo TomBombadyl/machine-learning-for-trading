@@ -8,6 +8,15 @@ Engine freezes the hyp card before anyone trains. CopperPotData /
 SemanticsCopperPot emit PIT columns. KaggleMLEngine runs only after
 the frame is frozen. Gate is always **IC → purge** before WF.
 
+**2026-09-20:** Experiment **C GBM prune is KILL / closed**. S2 WF **v0
+= KILL** (wrong weekly-in-position cost). S2 WF **v1 = CONTINUE** on
+`shortlist_log_h5` only (`promote=false`). Stretch Friday XGB is KILL.
+Do not rerun v0 or v1. Optional leftover on this family is
+`DEEP_TEST_MODE=robustness` (seeds, logistic only). New copper hyp is
+**A then B**. Receipt:
+[RECEIPT_2026-09-20_KAGGLE.md](RECEIPT_2026-09-20_KAGGLE.md). Handoff
+prompt: [RESEARCH_HANDOFF_PROMPT.md](RESEARCH_HANDOFF_PROMPT.md).
+
 ---
 
 ## Experiment A — HG-only CME config + free COT (beat a new case study)
@@ -20,6 +29,8 @@ the frame is frozen. Gate is always **IC → purge** before WF.
 | **Do not** | Full 30-product Databento refresh “to get HG”. New `case_studies/copper/`. Paid LME. GBM/DL. Commit parquets. |
 | **Free-data note** | If Databento bars are missing, run the same COT+MOM screen on research-machine `HG=F` / Friday panel. Say which panel on the card. |
 | **Gate** | PAPER or SHELF. `promote=false`. |
+| **Local screen** | `scripts/synap_copper/experiment_a_cot_mom_purge.py` (Friday panel or yfinance `HG=F` build). Graph schema: `data/synap/copper/docs/COPPER_GRAPH_HYP_CARD.md`. Cited map: [GNN_RESOURCE_MAP.md](GNN_RESOURCE_MAP.md). |
+| **Kaggle train** | Paste `scripts/synap_copper/copper_gnn_kaggle.py` whole-file. Same `deep_test_friday_panel_v0` dataset as S2. GAT trains only if graph purge survivors exist. `promote=false`. |
 
 ---
 
@@ -36,16 +47,28 @@ the frame is frozen. Gate is always **IC → purge** before WF.
 
 ---
 
-## Experiment C — S2 GBM prune on the *frozen* importance frame (beat a new sweep notebook)
+## Experiment C — S2 GBM prune — **KILL / closed 2026-09-20**
 
 | | |
 | --- | --- |
-| **Why native** | Ledger `S2_GBM_IMPORTANCE` is already CONTINUE. CME `07_gbm` + Ch12 presets + `create_experiment` are the sweep. `S1_KAGGLE` taught that a purged `sum_net` win with worse DD is SHELF. |
+| **Status** | **GBM/XGB/RF = KILL.** Stretch kitchen-sink XGB = KILL. **v1 logistic shortlist h5 = CONTINUE / `promote=false`** (1/9 decisions). v0 (weekly-in-position cost) = KILL, kept as the v0-cost receipt. |
+| **Why native (historical)** | Ledger `S2_GBM_IMPORTANCE` was CONTINUE (importance only). CME `07_gbm` + Ch12 presets are the sweep. `S1_KAGGLE` taught that a purged `sum_net` win with worse DD is SHELF. |
+| **Measured v1** | `shortlist_log_h5` sum_net +0.161 / maxDD 0.226677 vs mom −0.256638 / 0.426748; sign 3/5; AUC 0.535. Same panel sha `35f1fce22bca…`. Turnover cost. |
+| **Do now** | Do not rerun v0 or v1. Next leftover is `scripts/synap_copper/deep_test_s2_wf_robustness.py` (paste whole file; seeds 42–46). Do not raise `n_estimators`. New copper hyp is Experiment A. Paper MOM_ONLY lock unchanged. |
+| **Do not** | New Kaggle notebook tree. TabM/LSTM/PatchTST. Re-densify semantics. Promote on h5d `sum_net`. Change paper MOM thresholds. Treat COT ablation (n=208) as a passer. Reopen XGB/RF. |
+| **Receipt** | [RECEIPT_2026-09-20_KAGGLE.md](RECEIPT_2026-09-20_KAGGLE.md) |
+
+---
+
+## Experiment C (original brief, closed)
+
+Kept so agents do not re-invent the prune. **Do not execute.**
+
+| | |
+| --- | --- |
 | **Owners** | Engine (frozen feature list + DD hyp) · KaggleMLEngine (fit) |
-| **Do** | Freeze the MOM+ETF+SHFE/COT column set from the importance receipt (drop unstable names; keep `rank_stable` 5/5). In an experiment copy, point `07_gbm` / LightGBM presets at that frame (cpu unless Engine asks GPU). **Must** include logistic/`06_linear` as the baseline (receipt: rf h5d sum_net 0.142 vs log 0.053 — re-estimate after prune). Report purge survivors, maxDD vs S1 SHELF (+8.55pp warning), and costed path vs `S2_COSTED_STUB` (RF already lost to mom_log). |
-| **Do not** | New Kaggle notebook tree. TabM/LSTM/PatchTST. Re-densify semantics. Promote on h5d `sum_net` while h21 “GBM lost”. Change paper MOM thresholds. |
-| **Free-data note** | Runs on the existing deep-test / Friday panel. No new paid API. |
-| **Gate** | CONTINUE or SHELF. **Never PROMOTE.** DD-aware hyp required to reopen S1-style sweeps. |
+| **Was** | Freeze MOM+ETF+SHFE/COT from importance; logistic baseline mandatory; report purge / maxDD / costed vs `S2_COSTED_STUB`. |
+| **Gate used** | CONTINUE if challenger beats MOM_ONLY on costed `sum_net` AND maxDD not > baseline+5pp AND sign-stable ≥3/5 on ≥1 horizon. **Never PROMOTE.** |
 
 ---
 

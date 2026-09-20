@@ -13,7 +13,10 @@ hyp → data contract → labels/features → model vs baseline
 
 Copper v0 gates: **PAPER / SHELF / KILL / CONTINUE / PROMOTE**.
 PROMOTE is empty. Paper MOM_ONLY weekly is PAPER. Semantics counts and
-GraphRAG v0 are SHELF. `S2_GBM_IMPORTANCE` is CONTINUE.
+GraphRAG v0 are SHELF. `S2_GBM_IMPORTANCE` is CONTINUE (importance
+only). **2026-09-20:** S2 WF v0 and stretch Friday XGB are **KILL**.
+S2 WF v1 `shortlist_log_h5` is **CONTINUE / `promote=false`**. See
+[RECEIPT_2026-09-20_KAGGLE.md](RECEIPT_2026-09-20_KAGGLE.md).
 
 ---
 

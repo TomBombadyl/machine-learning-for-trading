@@ -27,6 +27,9 @@ DOCS_ROOT = COPPER_ROOT / "docs"
 # Optional research-machine artifacts. Large parquets must not be committed.
 PANEL_DAILY = COPPER_ROOT / "panels" / "hg_daily.parquet"
 PANEL_WEEKLY = COPPER_ROOT / "panels" / "hg_weekly.parquet"
+FRIDAY_PANEL = COPPER_ROOT / "panels" / "deep_test_friday_panel_v0.parquet"
+GRAPH_FEAT_PANEL = COPPER_ROOT / "panels" / "copper_graph_friday_features.parquet"
+EXPECTED_FRIDAY_SHA12 = "35f1fce22bca"
 PAPER_FILLS = COPPER_ROOT / "paper" / "mom_weekly_fills.parquet"
 REGIME_LABELS = COPPER_ROOT / "regimes" / "regime_labels.parquet"
 

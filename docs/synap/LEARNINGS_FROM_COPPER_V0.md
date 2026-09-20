@@ -1,6 +1,6 @@
 # Learnings from copper v0 — implied ML4T upgrades
 
-**promote=false.** What copper work through 2026-09-18 changes about
+**promote=false.** What copper work through **2026-09-20** changes about
 *how* Synap agents should use this ML4T fork. Not a rewrite of
 chapters. Not a new lock. Not a promote.
 
@@ -139,7 +139,7 @@ The in-repo script stays IDLE without
 | ------ | ------------ |
 | Soft IC is not a survivor | Ledger already: GraphRAG, EIA soft purge. Write **purge n / survivors** on every receipt |
 | `sum_net` up + DD worse = SHELF | `S1_KAGGLE` (+8.55pp maxDD). KaggleMLEngine does not reopen without a DD hyp |
-| GBM importance is CONTINUE, not a model launch | Prune features on the frozen S2 frame; still beat logistic; no DL |
+| GBM importance is CONTINUE, not a model launch | Importance ≠ WF. S2 GBM/XGB/RF and stretch XGB are **KILL**. v1 logistic shortlist h5 is **CONTINUE / promote=false** — do not promote it |
 | Costed stub can lose to MOM | `S2_COSTED_STUB` RF worse than mom_log. Costs/risk before any "RF won IC" story |
 | Crisis slices are small-n | Regime lock: do not rank on crisis Sharpe |
 | Feature survival ≠ strategy survival | Ch20 teaching; copper already saw it (inventory IC vs frozen S3) |
@@ -159,3 +159,29 @@ The in-repo script stays IDLE without
 The upgrade is **operating**: attach PIT columns to the Friday/CME
 grid, screen with the book’s purge/WF/IC tools, and let Engine gate.
 See [NEXT_ML4T_NATIVE_EXPERIMENTS.md](NEXT_ML4T_NATIVE_EXPERIMENTS.md).
+Kaggle day 2026-09-20: [RECEIPT_2026-09-20_KAGGLE.md](RECEIPT_2026-09-20_KAGGLE.md).
+
+---
+
+## 8. 2026-09-20 — S2 GBM is KILL; v1 logistic shortlist h5 is CONTINUE
+
+**What happened.** Deep Test S2 purged WF **v0** (panel sha
+`35f1fce22bca…`) stamped **KILL**, 0 passers / 9 decisions (weekly-in-
+position cost; `fwd_ret==0` labeled down). Same-day stretch Friday XGB
+also **KILL**. v1 re-receipt (turnover cost, drop zeros) stamped
+**CONTINUE** on `shortlist_log_h5` only: sum_net +0.161 / maxDD 0.226677
+vs mom −0.256638 / 0.426748; sign 3/5; AUC 0.535; `promote=false`.
+XGB/RF still KILL every horizon. SHFE ablation: `insufficient`. COT
+ablation is not a passer (n=208).
+
+**Implied upgrade.**
+
+- Experiment C **GBM prune is closed**. Do not reopen XGB/RF or a new
+  Kaggle S2 tree. Do not rerun v0 or v1.
+- v1 CONTINUE is **not** a paper lock. Optional leftover is robustness
+  seeds on the logistic passer. New copper hyp is Experiment A (free
+  COT + logistic) then B (SHFE state) — see NEXT doc.
+- Paper MOM_ONLY weekly is unchanged. Do not retune 0.60/0.40.
+- Oil that day: downtime P0–P2 CONTINUE (P2 pack lost to mom on
+  `sum_net`); TCN/TCNN KILL; Brent EIA logistic CONTINUE research-only.
+  No oil paper lock.
