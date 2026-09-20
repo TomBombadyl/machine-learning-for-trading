@@ -58,7 +58,8 @@ Research inputs and generated artifacts live under `data/synap/copper/`.
 | `copper_graph_tabular_features.py` | Ch23.4-style NetworkX columns on the Friday grid. GAT stays blocked unless graph cols survive purge. |
 | `copper_gnn_hybrid.py` | TinyGAT hybrid vs tabular survivors. Trains only if graph purge survivors exist. |
 | `copper_gnn_kaggle.py` | Weak-gate stamp only (hybrid vs tabular). **Do not rerun.** 14:32Z CONTINUE / `promote=false`. Gate ≠ S2. |
-| `copper_gnn_s2gate_kaggle.py` | **Next paste (deep).** Cell 1: TinyGAT vs MOM_ONLY, S2 gate, seeds 42–61, 500 epochs, step=13. Family CONTINUE if ≥60% seeds. Writes `copper_gnn_s2gate_memo.json` (checkpointed each seed). Cell 2 blocked until CONTINUE. `promote=false`. Expect hours on CPU. |
+| `copper_gnn_s2gate_kaggle.py` | Cell 1 deep **KILL** `0/20` (sign_stable 0/5). **Do not rerun.** Hybrid beat MOM sum_net+DD; last-5 dead for both. |
+| `copper_gnn_s2ablate_kaggle.py` | **Next paste.** MOM / graph_tabular / gat_emb / hybrid; epochs 50/150/250 + early-stop; seeds 42–46; fold_net + last{5,10,20}. Soft gate last-10≥4. Writes `copper_gnn_s2ablate_memo.json`. Cell 2 blocked unless CONTINUE + GAT adds. `promote=false`. |
 
 Shared candidate IDs and kill-criteria helpers live in `contract.py`.
 That module is also **not a promote**.

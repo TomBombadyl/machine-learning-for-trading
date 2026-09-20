@@ -130,14 +130,24 @@ sign on this card.
 Not a paper lock. Do not retune 0.60/0.40. Do not attach extra
 datasets. Do not git-add the Downloads JSON. Do not rerun this cell.
 
-### Cell 1 S2-gate (`copper_gnn_s2gate_v0`) → **pending operator paste**
+### Cell 1 S2-gate deep (`copper_gnn_s2gate_v0_deep`) → **KILL**
 
-Script is on disk: `scripts/synap_copper/copper_gnn_s2gate_kaggle.py`.
-No memo yet. Do not invent a verdict. After Kaggle `SystemExit 0`,
-stamp this row from `copper_gnn_s2gate_memo.json` only. Confirm sha
-`35f1fce22bca…`. Cell 2 stays **blocked** until family CONTINUE.
-SHELF (`graph_is_cot_dummy`) or KILL (<3/5 seeds) → do not write
-Cell 2.
+Operator files 2026-09-20 14:59Z. Same panel sha `35f1fce22bca…`.
+20 seeds (42–61), 500 epochs, step=13, cpu. Audit
+`graph_not_redundant_vs_cot`. **seeds_continue=0/20** floor=12.
+Every seed: hybrid beat MOM on costed `sum_net` (~0.94–1.41 vs
+−0.70) and maxDD (~0.42 vs 0.94); **last-5 fold signs 0/5 for hybrid
+and MOM**. Failure mode is temporal sign stability, not undertraining.
+`cell2_blocked=true`. Do **not** rerun 20×500.
+
+### Next paste — S2 ablate (`copper_gnn_s2ablate_v0`) → **pending**
+
+Script: `scripts/synap_copper/copper_gnn_s2ablate_kaggle.py`. Arms
+MOM / graph_tabular / gat_emb / hybrid; epoch caps 50/150/250 +
+early-stop; seeds 42–46; fold_net + last{5,10,20}. Soft gate
+last-10 ≥4/10. After Kaggle `SystemExit 0`, stamp from
+`copper_gnn_s2ablate_memo.json` only. Cell 2 stays blocked until
+family CONTINUE **and** GAT adds over graph tabular.
 
 ### Paper lock (unchanged)
 

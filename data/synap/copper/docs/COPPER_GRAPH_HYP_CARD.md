@@ -74,13 +74,21 @@ same IC → purge as COT+MOM. They are **not** a strategy.
 2. If survivors: logistic / linear only (`06_linear` pattern).
 3. If graph columns also survive purge: GAT hybrid
    (`06_gnn_feature_engineering` pattern) vs that tabular model.
-4. **Kaggle Cell 1 (next):** paste
-   `scripts/synap_copper/copper_gnn_s2gate_kaggle.py` as one new cell on
-   the existing S2 notebook. Same Friday panel (`35f1fce22bca…`). S2
-   gate vs MOM_ONLY, seeds 42–61, 500 epochs, step=13. Download
-   `copper_gnn_s2gate_memo.json`. Do not rerun `copper_gnn_kaggle.py`.
-5. **Kaggle Cell 2 (typed / 50 epochs):** blocked until Cell 1 family
-   CONTINUE. Do not write or run it before that stamp.
+4. **Kaggle Cell 1 (stamped 2026-09-20):** 
+   `copper_gnn_s2gate_kaggle.py` → **KILL** `0/20` seeds
+   (`copper_gnn_s2gate_v0_deep`). Hybrid beat MOM on costed `sum_net`
+   + maxDD every seed; last-5 fold signs were `0/5` for **both** arms.
+   Do **not** rerun 20×500. Do not rerun `copper_gnn_kaggle.py`.
+5. **Kaggle next paste (ablate):** 
+   `scripts/synap_copper/copper_gnn_s2ablate_kaggle.py` on the same S2
+   notebook / Friday panel. Arms: MOM / graph_tabular / gat_emb /
+   hybrid. Epoch caps 50/150/250 + early-stop. Seeds 42–46. Emits
+   `fold_net` + last{5,10,20} signs. Soft gate uses last-10 ≥4/10.
+   Download `copper_gnn_s2ablate_memo.json`. SHELF GAT if graph tabular
+   alone owns the edge.
+6. **Kaggle Cell 2 (typed / 50 epochs):** blocked until ablate family
+   CONTINUE **and** GAT adds over graph tabular. Do not write or run
+   it before that stamp.
 6. Chronos / PatchTST: sealed ablation on the **same** purged frame,
    later. Not this card.
 
