@@ -493,6 +493,30 @@ def main() -> int:
             "MOM path (usually shortlist_graph_cot mask), for display only."
         ),
     }
+    memo = {
+        "verdict": family,
+        "promote": False,
+        "version": VERSION,
+        "panel_sha12": panel_sha[:12],
+        "sha_note": panel_meta["sha_note"],
+        "n_seeds_continue": metrics["n_seeds_continue"],
+        "n_seeds": len(SEEDS),
+        "arm_continue_counts": arm_continue_counts,
+        "note": note,
+        "seed_verdicts": [
+            {
+                "seed": row.get("seed"),
+                "verdict": row.get("verdict"),
+                "best_continue_arm": row.get("best_continue_arm"),
+                "arm_verdicts": row.get("arm_verdicts"),
+            }
+            for row in seed_rows
+        ],
+        "paths": {
+            "metrics": str(OUT_DIR / "copper_s2_tabular_survivors_metrics.json"),
+            "memo": str(OUT_DIR / "copper_s2_tabular_survivors_memo.json"),
+        },
+    }
     receipt = (
         f"Verdict: {family} (promote=false) version={VERSION}\n"
         f"sha12={panel_sha[:12]} {panel_meta['sha_note']}\n"
