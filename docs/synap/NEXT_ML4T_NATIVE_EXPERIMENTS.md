@@ -85,6 +85,7 @@ Kept so agents do not re-invent the prune. **Do not execute.**
 | Coinbase fee grid | Fees/slippage TBD | Ch18 + CME `16_costs` `cost_grid_bps` with an Engine fee card |
 | Paper monitor 9/14 fail | Ops fix, not an experiment | Ch26 language; `paper_monitor_mom_weekly.py` |
 | Native CU bars | Data growth, not a model | CopperPotData; remap receipt |
+| CRB / copper relative (crossover) | Operator overlay idea 2026-09-20. Same **Ch8 cross-instrument** shape as `cper_mom_21d` / `fcx_mom_63d`, not a new family. Kitchen-sink stretch that piled extra moms was **KILL**. Copper is **inside** CRB, so HG–CRB is mechanically correlated. | One PIT column on the Friday panel (`crb_mom_21d` or `hg_crb_rel_21d`), IC → purge vs MOM_ONLY. Free series named on the card. TV search symbol `TRJEFFCRB` (CoreCommodity CRB, FTSE CFD) — add to existing FRED pine later, **no third file**. Do not add a `CRB` graph v0 node. |
 
 ---
 

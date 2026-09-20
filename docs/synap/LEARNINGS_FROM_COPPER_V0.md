@@ -151,6 +151,7 @@ The in-repo script stays IDLE without
 | Burst windows ≠ a new TF | 2h long-only +12.5% / PF 1.11 over 2020–26. Paydays ~2020–early 2022 and ~2025–now; 2022 is giveback. Not a conflict feature |
 | Empty Daily ≠ capital | Copper daily often opens Thursday night. Friday gate must use `dayofweek` or NY `time_close`, not bar-open NY Friday only |
 | No CSV = no number | A TV “kill” without export + Properties is unvalidated. First measured A stays +12% / PF 1.02 |
+| CRB is Ch8, not a new book | Overlay/crossover vs `TRJEFFCRB`. Same family as `cper_mom_*`. Copper sits inside CRB. One column + purge, not a third Pine and not a graph v0 node |
 
 ---
 

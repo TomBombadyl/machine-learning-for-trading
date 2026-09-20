@@ -55,6 +55,14 @@ When a new screenshot or CSV lands:
 Parameters worth sweeping **inside** the two Pines (not new files):
 `ChartTF`, `Side`, Friday on/off, hold 5/21/63, thresholds.
 
+Parked search signal (no file yet): **CRB**. TV `TRJEFFCRB`
+(Thomson Reuters / CoreCommodity CRB Index). Operator wants
+copper–CRB overlay / crossover. Same shape as FRED’s
+`request.security` legs and Engine `cper_mom_*`. If we test it,
+add a weight on `NCU_MOM_FRED.pine` — do **not** mint
+`NCU_MOM_CRB.pine`. Engine home: one Friday-panel column, IC →
+purge. Copper is inside CRB.
+
 Do not sweep oil on these scripts. Oil TV has no Pine.
 
 ---

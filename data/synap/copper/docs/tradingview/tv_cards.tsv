@@ -12,3 +12,4 @@ date	strategy	pine	asset	chart_tf	side	window_start	window_end	net_pct	max_dd_pc
 2026-09-20	MOM_FRED	NCU_MOM_FRED.pine	FX:COPPER	12h	short					missing		Short-only 12h not yet exported.
 2026-09-20	MOM_ONLY	NCU_S1_MOM_ONLY.pine	FX:COPPER	1D	both	2011-08-24	2026-09-17	12.74	28.56	343	191	56.1		sketch	Re-paste after Friday/time_close + side toggles. Settings: 0.60/0.40, hold 5, Friday on, both sides. PF not readable on screenshot. Fewer trades than first A card (651). Tester B&H near flat. Not a promote.
 2026-09-20	MOM_ONLY	NCU_S1_MOM_ONLY.pine	FX:COPPER	1D	both					missing		Operator: later weekly-interim Daily both-sides “killed it.” No CSV/Properties. Do not treat as a number. Validate before any re-open.
+2026-09-20	CRB_REL	NCU_MOM_FRED.pine	TRJEFFCRB	parked	both					missing		Parked. Copper vs CoreCommodity CRB overlay/crossover. Ch8 cousin of CPER/FCX. No third Pine. Engine: one PIT column, IC then purge vs MOM. Copper is a CRB constituent.

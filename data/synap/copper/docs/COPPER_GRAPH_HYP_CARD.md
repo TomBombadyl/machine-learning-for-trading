@@ -37,6 +37,12 @@ Resource map: [docs/synap/GNN_RESOURCE_MAP.md](../../../docs/synap/GNN_RESOURCE_
 
 Do not add semantics `cnt_*` nodes. Those are SHELF.
 
+Parked (not a v0 node): Thomson Reuters / CoreCommodity **CRB**
+(`TRJEFFCRB` on TV). Same Ch8 bucket as CPER/FCX moms. Do not add
+`CRB` here until a single Friday-panel column survives IC → purge
+vs MOM_ONLY. Copper is a CRB constituent — relative strength is
+not an independent graph.
+
 ---
 
 ## Edges (v0 schema)
