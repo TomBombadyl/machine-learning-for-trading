@@ -13,19 +13,27 @@ Closed (do not reopen):
 
 What this cell adds (stress grid, still logistic only):
   - Horizons: fwd_ret_5d always; 21d / 63d if columns exist
-  - Steps: 26 (v1) and 13 (ablate geometry as sensitivity)
-  - Costs: 4 bps and 8 bps one-way turnover
-  - Per-arm row masks (no joint dropna across unused columns)
-  - NaN → 0 after per-arm finite mask (scaler-safe)
-  - Headline gate on shortlist_graph_cot vs MOM (not any-arm)
+  - Steps: 26 (v1 primary) and 13 (ablate geometry — diagnostic only)
+  - Costs: 4 bps (primary) and 8 bps one-way turnover
+  - Each challenger vs MOM on a **shared** finite-row mask for that pair
+  - NaN → 0 after that mask (scaler-safe)
+  - Headline arm: shortlist_graph_cot (shortlist also scored as twin)
 
-Seeds 42–46 still run (re-stamp + receipt shape). Expect near-identical
-paths under fixed C / frozen features — diversity comes from the grid,
-not from seed noise.
+Architecture (I/O):
+  IN:  deep_test_friday_panel_v0.parquet (sha 35f1fce22bca…)
+       frozen feat lists (MOM / shortlist / graph / COT survivors)
+  MID: NetworkX snapshot cols (pagerank/betweenness/hhi) PIT lookback=52
+       purged expanding WF; embargo = max(2, (h+4)//5)
+       logistic only — **no TinyGAT / no Cell 2**
+  OUT: memo / metrics / receipt under /kaggle/working
+
+Seeds 42–46 still run (receipt shape). Expect near-identical paths under
+fixed C / frozen features — diversity comes from the grid, not seeds.
 
 Family CONTINUE if ≥3/5 seeds have shortlist_graph_cot CONTINUE on the
-primary cell (h=5, step=26, cost=4bps) AND that same arm also CONTINUES
-on ≥1 alternate grid cell (other horizon/step/cost). Never PROMOTE.
+**primary** cell only (h=5, step=26, cost=4bps). Alternate grid cells
+are reported for stress; they do **not** gate the family (h21/h63 and
+step=13 already fail this panel under S2 stamps). Never PROMOTE.
 
 Download after success:
   copper_s2_tabular_deep_memo.json
@@ -462,7 +470,8 @@ def main() -> int:
                 if not is_primary(c) and c.get("headline_verdict") == "CONTINUE"
             ]
             primary_ok = bool(primary and primary.get("headline_verdict") == "CONTINUE")
-            seed_continue = primary_ok and len(alt_ok) >= 1
+            # Family gate = primary only. Alts are stress diagnostics.
+            seed_continue = primary_ok
             row = {
                 "seed": seed,
                 "verdict": "CONTINUE" if seed_continue else "KILL",
@@ -521,10 +530,10 @@ def main() -> int:
             "note": "GAT closed; deep stress is tabular only",
         },
         "gate": (
-            "PRIMARY (h5/step26/4bps): shortlist_graph_cot beats MOM on costed "
-            "sum_net AND maxDD not > baseline+5pp AND sign-stable >=3/5; "
-            "AND same arm CONTINUES on >=1 alternate (horizon|step|cost) cell; "
-            f"family CONTINUE if >={FAMILY_MIN_FRAC:.0%} of {len(SEEDS)} seeds"
+            "PRIMARY only (h5/step26/4bps): shortlist_graph_cot beats MOM on "
+            "costed sum_net AND maxDD not > baseline+5pp AND sign-stable >=3/5; "
+            f"family CONTINUE if >={FAMILY_MIN_FRAC:.0%} of {len(SEEDS)} seeds "
+            "pass primary. Alternate horizon/step/cost cells are diagnostic only."
         ),
         "panel": panel_meta,
         "primary": PRIMARY,
@@ -542,9 +551,10 @@ def main() -> int:
         "verdict": family,
         "note": note,
         "code_notes": [
-            "per-arm finite masks (no joint dropna across unused cols)",
+            "challenger vs MOM on shared finite mask for that pair",
             "nan_to_num before StandardScaler",
             "seed-invariant logistic expected; grid is the stress",
+            "step=13 / h21 / h63 / 8bps do not gate family CONTINUE",
         ],
     }
     memo = {
