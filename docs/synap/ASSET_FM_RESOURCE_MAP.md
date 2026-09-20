@@ -12,6 +12,8 @@ Grounding: this repo, Hugging Face **MCP**
 Hugging Face model cards fetched the same day, or Tavily research run
 `55711173-9e6e-453a-9c30-93acfd22b4cc`. If a row is not in those, it
 is marked unknown. SynapGarden has **zero** Hub models/datasets.
+**Sept 2026:** do not re-run that Tavily inventory — see
+[API_BUDGET_TAVILY.md](API_BUDGET_TAVILY.md) (~80% month quota used).
 
 Local ledger: [RECEIPT_2026-09-20_KAGGLE.md](RECEIPT_2026-09-20_KAGGLE.md).
 GNN path: [GNN_RESOURCE_MAP.md](GNN_RESOURCE_MAP.md).
