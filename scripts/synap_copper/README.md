@@ -52,6 +52,19 @@ Research inputs and generated artifacts live under `data/synap/copper/`.
 | `multi_horizon_long_short_scorecard.py` | Locked research candidates in `data/synap/copper/docs/MULTI_HORIZON_LONG_SHORT_SCORECARD.md` |
 | `regime_backtests_locked.py` | Locked regime notes in `data/synap/copper/docs/REGIME_BACKTESTS_LOCKED.md` |
 | `paper_monitor_mom_weekly.py` | Paper-only weekly MOM_ONLY lock in `data/synap/copper/docs/HG_WEEKLY_DECISION_LOCK.md` and `paper_mom_weekly_lock.json` |
+| `deep_test_s2_wf_v1.py` | S2 WF v1 (turnover cost + drop zero labels). v0 = KILL. v1 = CONTINUE on `shortlist_log_h5` only (`promote=false`). Do not rerun v1. |
+| `deep_test_s2_wf_robustness.py` | Paste-ready Kaggle cell. Same v1 gate, seeds 42–46. Family CONTINUE if ≥3/5 seeds pass. `promote=false`. Do not raise trees. |
+| `experiment_a_cot_mom_purge.py` | Experiment A: COT+MOM IC → purge vs `fwd_ret_5d`. CONTINUE only if COT survivors. `allow_gnn=False`. |
+| `copper_graph_tabular_features.py` | Ch23.4-style NetworkX columns on the Friday grid. GAT stays blocked unless graph cols survive purge. |
+| `copper_gnn_hybrid.py` | TinyGAT hybrid vs tabular survivors. Trains only if graph purge survivors exist. |
+| `copper_gnn_kaggle.py` | Weak-gate stamp only (hybrid vs tabular). **Do not rerun.** 14:32Z CONTINUE / `promote=false`. Gate ≠ S2. |
+| `copper_gnn_s2gate_kaggle.py` | **Next paste (deep).** Cell 1: TinyGAT vs MOM_ONLY, S2 gate, seeds 42–61, 500 epochs, step=13. Family CONTINUE if ≥60% seeds. Writes `copper_gnn_s2gate_memo.json` (checkpointed each seed). Cell 2 blocked until CONTINUE. `promote=false`. Expect hours on CPU. |
 
 Shared candidate IDs and kill-criteria helpers live in `contract.py`.
 That module is also **not a promote**.
+
+2026-09-20: S2 WF v0 and stretch XGB are **KILL**. v1 logistic
+`shortlist_log_h5` is **CONTINUE / promote=false**. See
+[`docs/synap/RECEIPT_2026-09-20_KAGGLE.md`](../../docs/synap/RECEIPT_2026-09-20_KAGGLE.md)
+and the next-agent prompt
+[`docs/synap/RESEARCH_HANDOFF_PROMPT.md`](../../docs/synap/RESEARCH_HANDOFF_PROMPT.md).

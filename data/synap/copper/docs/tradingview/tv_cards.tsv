@@ -1,0 +1,14 @@
+date	strategy	pine	asset	chart_tf	side	window_start	window_end	net_pct	max_dd_pct	n_trades	n_wins	win_pct	pf	csv	verdict	note
+2026-09-20	MOM_ONLY	NCU_S1_MOM_ONLY.pine	FX:COPPER	1D	both	2012-02-24	2026-09-18	12.2	45.4	651	338	51.9	1.019	NCU_S1_MOM_ONLY_Weekly_(interim_PAPER)_FX_COPPER_2026-09-20_9c4fa.csv	fail_bh	Paper cousin. Fails operator B&H.
+2026-09-20	MOM_FRED	NCU_MOM_FRED.pine	FX:COPPER	1D	both			not_good						snooping	Operator: not good. No five-number card.
+2026-09-20	MOM_FRED	NCU_MOM_FRED.pine	FX:COPPER	5D	both			not_good						snooping	Operator: not good.
+2026-09-20	MOM_FRED	NCU_MOM_FRED.pine	FX:COPPER	7D	both			not_good						snooping	Operator: not good.
+2026-09-20	MOM_FRED	NCU_MOM_FRED.pine	FX:COPPER	1M	both			not_good						snooping	Operator: not good.
+2026-09-20	MOM_FRED	NCU_MOM_FRED.pine	FX:COPPER	63D	both			not_good						snooping	Operator: not good.
+2026-09-20	MOM_FRED	NCU_MOM_FRED.pine	FX:COPPER	<=4h	both			not_good						snooping	Operator: not good.
+2026-09-20	MOM_FRED	NCU_MOM_FRED.pine	FX:COPPER	12h	both	2011-08-24	2026-09-18		46		1.29		snooping	Two-sided. Dead years then 2021-26. Neighbors failed.
+2026-09-20	MOM_FRED	NCU_MOM_FRED.pine	FX:COPPER	12h	long	2014-07-18	2026-08-03	59.66	37.76	108	62	57.4	1.35	NCU_MOM_FRED_(PAPER)_FX_COPPER_2026-09-20_2c086.csv	sketch	Nicest sketch. All L, hold 21. Shorts dragged two-sided. Tester B&H near flat. Not paper lock.
+2026-09-20	MOM_FRED	NCU_MOM_FRED.pine	FX:COPPER	2h	long	2020-01-02	2026-09-18	12.46	31.38	176	101	57.4	1.11		burst	Weaker full book. Bursts ~2020-early2022 and ~2025-now. 2022 giveback. Not a conflict feature.
+2026-09-20	MOM_FRED	NCU_MOM_FRED.pine	FX:COPPER	12h	short					missing		Short-only 12h not yet exported.
+2026-09-20	MOM_ONLY	NCU_S1_MOM_ONLY.pine	FX:COPPER	1D	both	2011-08-24	2026-09-17	12.74	28.56	343	191	56.1		sketch	Re-paste after Friday/time_close + side toggles. Settings: 0.60/0.40, hold 5, Friday on, both sides. PF not readable on screenshot. Fewer trades than first A card (651). Tester B&H near flat. Not a promote.
+2026-09-20	MOM_ONLY	NCU_S1_MOM_ONLY.pine	FX:COPPER	1D	both					missing		Operator: later weekly-interim Daily both-sides “killed it.” No CSV/Properties. Do not treat as a number. Validate before any re-open.

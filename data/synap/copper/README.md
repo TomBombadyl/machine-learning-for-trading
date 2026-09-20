@@ -8,7 +8,7 @@ ML4T data loaders. It is not a chapter dataset and it is not a live book.
 
 - `README.md` (this file)
 - `paper_mom_weekly_lock.json` — paper-only weekly MOM_ONLY decision lock
-- `docs/` — locks, scorecard notes, regime notes, TradingView research ports
+- `docs/` — locks, scorecard notes, regime notes, TradingView research ports, `COPPER_GRAPH_HYP_CARD.md`
 
 ## What must not be committed
 
@@ -39,3 +39,9 @@ TradingView port.
 The evidence loop is owned by the FinPredict Engine. Docs and scripts
 here restate locks. **Never promote from this folder or from the scripts
 alone.**
+
+2026-09-20 Kaggle ledger (S2 WF v0 **KILL**, v1 `shortlist_log_h5`
+**CONTINUE / promote=false**, stretch XGB **KILL**):
+[`docs/synap/RECEIPT_2026-09-20_KAGGLE.md`](../../../docs/synap/RECEIPT_2026-09-20_KAGGLE.md).
+Next-agent prompt:
+[`docs/synap/RESEARCH_HANDOFF_PROMPT.md`](../../../docs/synap/RESEARCH_HANDOFF_PROMPT.md).

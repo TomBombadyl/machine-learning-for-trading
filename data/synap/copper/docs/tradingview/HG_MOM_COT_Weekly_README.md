@@ -24,8 +24,8 @@ different feature and silently break the lock.
 - Build and score MOM_COT in the FinPredict Engine (free CFTC source).
 - Use `scripts/synap_copper/multi_horizon_long_short_scorecard.py` only
   to restate the locked candidate list.
-- Use `HG_MOM_ONLY_Weekly.pine` if you need a TV sketch of the
-  MOM-only paper cousin (no COT).
+- Use `HG_MOM_ONLY_Weekly.pine` (lock twin) or `NCU_S1_MOM_ONLY.pine`
+  (v6 Tester) if you need a TV sketch of the MOM-only paper cousin (no COT).
 
 ## Never promote
 
