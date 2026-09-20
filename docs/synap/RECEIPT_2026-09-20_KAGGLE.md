@@ -128,9 +128,16 @@ sign on this card.
 | promote | false |
 
 Not a paper lock. Do not retune 0.60/0.40. Do not attach extra
-datasets. Do not git-add the Downloads JSON. If Engine wants
-S2-strength evidence, score the same hybrid vs MOM_ONLY on maxDD +
-last-5 sign. Optional S2 robustness seeds still open.
+datasets. Do not git-add the Downloads JSON. Do not rerun this cell.
+
+### Cell 1 S2-gate (`copper_gnn_s2gate_v0`) → **pending operator paste**
+
+Script is on disk: `scripts/synap_copper/copper_gnn_s2gate_kaggle.py`.
+No memo yet. Do not invent a verdict. After Kaggle `SystemExit 0`,
+stamp this row from `copper_gnn_s2gate_memo.json` only. Confirm sha
+`35f1fce22bca…`. Cell 2 stays **blocked** until family CONTINUE.
+SHELF (`graph_is_cot_dummy`) or KILL (<3/5 seeds) → do not write
+Cell 2.
 
 ### Paper lock (unchanged)
 

@@ -74,10 +74,14 @@ same IC → purge as COT+MOM. They are **not** a strategy.
 2. If survivors: logistic / linear only (`06_linear` pattern).
 3. If graph columns also survive purge: GAT hybrid
    (`06_gnn_feature_engineering` pattern) vs that tabular model.
-4. **Kaggle:** paste `scripts/synap_copper/copper_gnn_kaggle.py` as one
-   cell on the same Friday panel (`35f1fce22bca…`). Do not attach EUR
-   commodity CSVs. Download `copper_gnn_memo.json` after SystemExit 0.
-5. Chronos / PatchTST: sealed ablation on the **same** purged frame,
+4. **Kaggle Cell 1 (next):** paste
+   `scripts/synap_copper/copper_gnn_s2gate_kaggle.py` as one new cell on
+   the existing S2 notebook. Same Friday panel (`35f1fce22bca…`). S2
+   gate vs MOM_ONLY, seeds 42–61, 500 epochs, step=13. Download
+   `copper_gnn_s2gate_memo.json`. Do not rerun `copper_gnn_kaggle.py`.
+5. **Kaggle Cell 2 (typed / 50 epochs):** blocked until Cell 1 family
+   CONTINUE. Do not write or run it before that stamp.
+6. Chronos / PatchTST: sealed ablation on the **same** purged frame,
    later. Not this card.
 
 Paper MOM_ONLY weekly (0.60 / 0.40, `vol_target` + `dd_halt`) stays

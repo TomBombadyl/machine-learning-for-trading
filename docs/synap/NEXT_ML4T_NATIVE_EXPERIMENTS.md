@@ -30,7 +30,7 @@ prompt: [RESEARCH_HANDOFF_PROMPT.md](RESEARCH_HANDOFF_PROMPT.md).
 | **Free-data note** | If Databento bars are missing, run the same COT+MOM screen on research-machine `HG=F` / Friday panel. Say which panel on the card. |
 | **Gate** | PAPER or SHELF. `promote=false`. |
 | **Local screen** | `scripts/synap_copper/experiment_a_cot_mom_purge.py` (Friday panel or yfinance `HG=F` build). Graph schema: `data/synap/copper/docs/COPPER_GRAPH_HYP_CARD.md`. Cited map: [GNN_RESOURCE_MAP.md](GNN_RESOURCE_MAP.md). |
-| **Kaggle train** | Paste `scripts/synap_copper/copper_gnn_kaggle.py` whole-file. Same `deep_test_friday_panel_v0` dataset as S2. GAT trains only if graph purge survivors exist. `promote=false`. |
+| **Kaggle train** | `copper_gnn_kaggle.py` is stamped (weak gate). **Next:** paste `scripts/synap_copper/copper_gnn_s2gate_kaggle.py` on the same S2 notebook. Cell 2 typed GAT is blocked until Cell 1 family CONTINUE. `promote=false`. |
 
 ---
 

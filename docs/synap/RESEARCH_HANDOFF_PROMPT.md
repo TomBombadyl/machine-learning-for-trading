@@ -89,9 +89,14 @@ fits are KILL. v1 CONTINUE is **not** a paper lock.
    allowed leftover is `DEEP_TEST_MODE=robustness` in
    `scripts/synap_copper/deep_test_s2_wf_v1.py` (seeds 42–46, primary
    logistic only). Not more trees. Not XGB/RF reopen.
-3. Experiment A + gated GAT stamped CONTINUE; sha matches S2. Do not
-   rerun. If Engine wants S2-strength evidence, score the same hybrid
-   vs MOM_ONLY on maxDD + last-5 sign — do not attach new datasets.
+3. **Next paste:** `scripts/synap_copper/copper_gnn_s2gate_kaggle.py`
+   as a **new cell** on the existing S2 notebook (same dataset only).
+   That is Cell 1 / S2-strength gate vs MOM, seeds 42–61, 500 epochs,
+   step=13, COT-dummy
+   audit. Do not rerun `copper_gnn_kaggle.py`. Cell 2 (typed GAT) is
+   **blocked** until `copper_gnn_s2gate_memo.json` family CONTINUE.
+   After SystemExit 0, download the s2gate memo/metrics/receipt and
+   stamp the ledger. SHELF or KILL → do not write Cell 2.
 4. Experiment B (SHFE as Ch8 state) only if SHFE is dense enough —
    S2 SHFE ablation was `insufficient`. Skip rather than paid scrape.
 5. Oil: no `OIL_P3` exists in this repo. Do not invent one. Do not

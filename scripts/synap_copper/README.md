@@ -57,7 +57,8 @@ Research inputs and generated artifacts live under `data/synap/copper/`.
 | `experiment_a_cot_mom_purge.py` | Experiment A: COT+MOM IC → purge vs `fwd_ret_5d`. CONTINUE only if COT survivors. `allow_gnn=False`. |
 | `copper_graph_tabular_features.py` | Ch23.4-style NetworkX columns on the Friday grid. GAT stays blocked unless graph cols survive purge. |
 | `copper_gnn_hybrid.py` | TinyGAT hybrid vs tabular survivors. Trains only if graph purge survivors exist. |
-| `copper_gnn_kaggle.py` | **Paste this whole file as one Kaggle cell.** Same Friday panel as S2. Writes `copper_gnn_memo.json` / `copper_gnn_metrics.json`. GAT trains only after graph purge. `promote=false`. |
+| `copper_gnn_kaggle.py` | Weak-gate stamp only (hybrid vs tabular). **Do not rerun.** 14:32Z CONTINUE / `promote=false`. Gate ≠ S2. |
+| `copper_gnn_s2gate_kaggle.py` | **Next paste (deep).** Cell 1: TinyGAT vs MOM_ONLY, S2 gate, seeds 42–61, 500 epochs, step=13. Family CONTINUE if ≥60% seeds. Writes `copper_gnn_s2gate_memo.json` (checkpointed each seed). Cell 2 blocked until CONTINUE. `promote=false`. Expect hours on CPU. |
 
 Shared candidate IDs and kill-criteria helpers live in `contract.py`.
 That module is also **not a promote**.
