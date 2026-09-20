@@ -138,11 +138,10 @@ one registry hash.
 6. **Kaggle Cell 1 deep (stamped KILL):** `copper_gnn_s2gate_kaggle.py`
    `0/20` — sign_stable last-5 failed for hybrid **and** MOM. Do not
    rerun 20×500.
-7. **Kaggle next paste:** `scripts/synap_copper/copper_gnn_s2ablate_kaggle.py`
-   — MOM vs graph_tabular vs gat_emb vs hybrid; epoch caps 50/150/250;
-   seeds 42–46; fold_net series. Cell 2 typed GAT blocked until ablate
-   family CONTINUE **and** GAT adds over graph tabular.
-8. Sequence ablation later, **same** purged frame: Ch13 Linear / PatchTST / Chronos. Not a TCN reopen.
+7. **Kaggle S2 ablate (stamped KILL):** `copper_gnn_s2ablate_kaggle.py`
+   `0/5` at best_epoch_cap=50; soft last-10 gate; `cell2_blocked`.
+   Do not rerun. Typed GAT Cell 2 is closed under this hyp.
+8. Sequence ablation later, **same** purged frame: Ch13 Linear / PatchTST / Chronos. Not a TCN reopen. Not TinyGAT reopen.
 
 Gate: IC → purge → costed WF vs MOM. CONTINUE ≠ paper lock.
 Paper MOM_ONLY weekly is unchanged.

@@ -1,31 +1,19 @@
 #!/usr/bin/env python3
-"""Next paste — S2 ablate after Cell 1 deep KILL (sign_stable 0/5).
+"""S2 ablate after Cell 1 deep KILL — STAMPED.
 
-promote=false ALWAYS. Paste this WHOLE file as one new cell at the
-bottom of the existing S2 notebook. Same Friday panel only
-(sha 35f1fce22bca…). Do not rerun copper_gnn_kaggle.py or
-copper_gnn_s2gate_kaggle.py.
+promote=false ALWAYS.
 
-Why this cell (not more 500-epoch seeds):
-  Cell 1 deep (copper_gnn_s2gate_v0_deep) KILL 0/20 — hybrid beat MOM
-  on sum_net + maxDD every seed, but last-5 fold signs were 0/5 for
-  BOTH hybrid and MOM. Failure mode is temporal, not undertraining.
+STAMPED 2026-09-20: copper_gnn_s2ablate_v0 = KILL
+  best_epoch_cap=50; seeds_continue=0/5 floor=3
+  shelf_gat=False; cell2_blocked=True
+Do NOT rerun this file. Typed GAT Cell 2 is closed under this hyp.
 
-Arms (same purged WF, same costs/thresholds):
-  A  MOM_ONLY                         # locked baseline
-  B  graph_tabular                    # pagerank/betweenness/hhi only
-  C  gat_emb                          # TinyGAT HG embedding only
-  D  hybrid                           # graph_tabular + gat_emb (Cell 1)
+Historical contract (already executed):
+  Arms MOM / graph_tabular / gat_emb / hybrid.
+  Epoch caps 50/150/250 + early-stop; seeds 42–46.
+  Soft gate last-10 ≥4/10; family ≥3/5 at best epoch_cap.
 
-GAT: epochs in {50, 150, 250} with early-stop patience=25 on train BCE.
-Seeds: 42–46 (gym-length). Emits fold_net series + last{5,10,20} signs.
-
-Family CONTINUE only if ≥3/5 seeds have an arm that beats MOM on
-costed sum_net AND maxDD ≤ MOM+5pp AND last-10 sign ≥4/10.
-SHELF GAT if arm B already matches/beats arm C/D on that gate.
-Cell 2 stays blocked unless family CONTINUE. Never PROMOTE.
-
-Download after SystemExit 0:
+Download artifacts (legacy):
   copper_gnn_s2ablate_memo.json
   copper_gnn_s2ablate_metrics.json
   copper_gnn_s2ablate_receipt.txt
