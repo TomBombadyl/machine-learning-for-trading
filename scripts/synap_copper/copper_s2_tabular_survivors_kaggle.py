@@ -482,4 +482,8 @@ def main() -> int:
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    # Notebook-safe: return code only (avoid IPython SystemExit warning).
+    raise SystemExit(main()) if not hasattr(__builtins__, "__IPYTHON__") else (main() or None)
+
+# Kaggle / Jupyter: always run.
+main()
