@@ -34,7 +34,7 @@ copper Pines.
 | **Free-data note** | If Databento bars are missing, run the same COT+MOM screen on research-machine `HG=F` / Friday panel. Say which panel on the card. |
 | **Gate** | PAPER or SHELF. `promote=false`. |
 | **Local screen** | `scripts/synap_copper/experiment_a_cot_mom_purge.py` (Friday panel or yfinance `HG=F` build). Graph schema: `data/synap/copper/docs/COPPER_GRAPH_HYP_CARD.md`. Cited map: [GNN_RESOURCE_MAP.md](GNN_RESOURCE_MAP.md). |
-| **Kaggle train** | GNN cells stamped KILL/closed. Survivors stamped CONTINUE 5/5. **Next paste:** `scripts/synap_copper/copper_s2_tabular_deep_kaggle.py` (horizon/step/cost stress on `shortlist_graph_cot`, no GAT). `promote=false`. |
+| **Kaggle train** | GNN closed. Survivors CONTINUE. Deep grid in flight. **Big paste (4h+):** `scripts/synap_copper/copper_s2_tabular_marathon_kaggle.py`. `promote=false`. |
 
 ---
 
