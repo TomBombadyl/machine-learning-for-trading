@@ -18,13 +18,15 @@ Metrics reviewed: graph/COT add costed lift; GAT stays closed.
 
 ## Exact next action
 
-1. Engine: freeze `shortlist_graph_cot` as the research headline stack
-   on Friday panel `35f1fce22bca…` — still `promote=false`.
-2. Keep shortlist as DD-cleaner ablation twin.
+1. Paste `scripts/synap_copper/copper_s2_tabular_deep_kaggle.py` on the
+   existing S2 notebook. Family gate = primary only (h5/step26/4bps
+   `shortlist_graph_cot` vs MOM). Grid (h21/63, step13, 8bps) is
+   diagnostic, not a second gate. Same panel `35f1fce22bca…`.
+   `promote=false`.
+2. Engine: keep `shortlist_graph_cot` as the research headline stack;
+   keep shortlist as DD-cleaner twin.
 3. Do **not** reopen TinyGAT / Cell 2 / another GNN paste.
 4. Do **not** flip paper MOM 0.60/0.40.
-5. Optional leftover: S2 v1 robustness script only if Engine wants a
-   second logistic re-stamp — not required for this CONTINUE.
 
 ## Hard do-nots
 
