@@ -1,32 +1,30 @@
 //@version=6
-// Synap FinPredict INTERIM — NOT a promote
-// S1: weekly MOM_ONLY MR-framed threshold -> test on NCU (or HG1! proxy)
-// Same math as HG_MOM_ONLY_Weekly.pine. Pine v6; margin 0 = v5 Tester.
-strategy("NCU S1 MOM_ONLY Weekly (interim PAPER)", overlay=false, initial_capital=100000,
+// Paper MOM_ONLY cousin. NOT a promote. Switch chart TF yourself (1D / 5D / 21D / 63D / 1M).
+// Lookbacks 5/21/63 are chart bars. Uncheck Friday on non-daily.
+// MR: negate mom. Rally → low proba → SHORT. Dip → high proba → LONG.
+strategy("NCU S1 MOM_ONLY (PAPER)", overlay=false, initial_capital=100000,
      commission_type=strategy.commission.percent, commission_value=0.04,
      default_qty_type=strategy.percent_of_equity, default_qty_value=100,
      pyramiding=0, calc_on_every_tick=false, margin_long=0, margin_short=0)
 
 float thrLong = input.float(0.60, "Long threshold", minval=0.5, maxval=0.9)
 float thrShort = input.float(0.40, "Short threshold", minval=0.1, maxval=0.5)
-int holdBars = input.int(5, "Hold bars after Friday signal", minval=1, maxval=21)
-bool useFriOnly = input.bool(true, "Signals only on Friday")
+int holdBars = input.int(5, "Hold bars after signal", minval=1, maxval=126)
+bool useFriOnly = input.bool(true, "Friday-only (NY). Off on 5D/21D/63D/1M")
+bool allowLong = input.bool(true, "Allow longs")
+bool allowShort = input.bool(true, "Allow shorts")
 
 float mom5 = close / close[5] - 1.0
 float mom21 = close / close[21] - 1.0
 float mom63 = close / close[63] - 1.0
-float s5 = -mom5
-float s21 = -mom21
-float s63 = -mom63
-float blend = (s5 + s21 + s63) / 3.0
+float blend = (-mom5 - mom21 - mom63) / 3.0
 float z = blend / ta.stdev(blend, 63)
 float proba = 1.0 / (1.0 + math.exp(-z))
 
-// COMEX daily bars can stamp Saturday on a non-NY clock — empty Tester.
-bool isFri = dayofweek(time, "America/New_York") == dayofweek.friday
+bool isFri = dayofweek == dayofweek.friday or dayofweek(time_close, "America/New_York") == dayofweek.friday
 bool canSignal = not useFriOnly or isFri
-bool longCond = canSignal and proba >= thrLong
-bool shortCond = canSignal and proba <= thrShort
+bool longCond = allowLong and canSignal and proba >= thrLong
+bool shortCond = allowShort and canSignal and proba <= thrShort
 
 var int barsInTrade = 0
 if strategy.position_size != 0
@@ -37,9 +35,11 @@ else
 if longCond and strategy.position_size <= 0
     strategy.close("S")
     strategy.entry("L", strategy.long)
+    barsInTrade := 0
 if shortCond and strategy.position_size >= 0
     strategy.close("L")
     strategy.entry("S", strategy.short)
+    barsInTrade := 0
 if barsInTrade >= holdBars
     strategy.close_all()
 

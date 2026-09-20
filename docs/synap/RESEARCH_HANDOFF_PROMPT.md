@@ -16,17 +16,20 @@ oil paper lock. You do not change
 ## Pickup (read in this order)
 
 1. `docs/synap/README.md`
-2. `docs/synap/RECEIPT_2026-09-20_KAGGLE.md` — **today’s ledger**
-3. `docs/synap/LEARNINGS_FROM_COPPER_V0.md`
-4. `docs/synap/NEXT_ML4T_NATIVE_EXPERIMENTS.md` — C GBM **KILL**; v1 logistic **CONTINUE / promote=false**
-5. `docs/synap/ML4T_COPPER_OWNERSHIP_MAP.md`
-6. `docs/synap/ML4T_EVIDENCE_LOOP_GROUNDING.md`
-7. `docs/synap/GNN_RESOURCE_MAP.md` — copper GNN path; GAT only after IC → purge
-8. `docs/synap/ASSET_FM_RESOURCE_MAP.md` — HF / official TSFMs for copper/oil; sealed only. Hugging Face MCP is live (`hub_repo_search` / `hub_repo_details` as `TomBombadyl` / SynapGarden admin). Re-query the Hub; do not invent IDs. SynapGarden has zero Hub repos.
-9. Copper graph hyp: `data/synap/copper/docs/COPPER_GRAPH_HYP_CARD.md`
-10. Copper lock: `data/synap/copper/docs/HG_WEEKLY_DECISION_LOCK.md`
-11. Oil lock: `data/synap/oil/docs/CL_BRENT_WEEKLY_DECISION_LOCK.md`
-12. `scripts/synap_oil/contract.py` — no oil paper lock; kill helper reserved
+2. `docs/synap/RECEIPT_2026-09-20_KAGGLE.md` — **Kaggle ledger**
+3. `docs/synap/REPORT_2026-09-20_COPPER_TV.md` — copper TV initial tests (learning only)
+4. `docs/synap/LEARNINGS_FROM_COPPER_V0.md`
+5. `docs/synap/NEXT_ML4T_NATIVE_EXPERIMENTS.md` — C GBM **KILL**; v1 logistic **CONTINUE / promote=false**
+6. `docs/synap/ML4T_COPPER_OWNERSHIP_MAP.md`
+7. `docs/synap/ML4T_EVIDENCE_LOOP_GROUNDING.md`
+8. `docs/synap/GNN_RESOURCE_MAP.md` — copper GNN path; GAT only after IC → purge
+9. `docs/synap/ASSET_FM_RESOURCE_MAP.md` — HF / official TSFMs for copper/oil; sealed only. Hugging Face MCP is live (`hub_repo_search` / `hub_repo_details` as `TomBombadyl` / SynapGarden admin). Re-query the Hub; do not invent IDs. SynapGarden has zero Hub repos.
+10. Copper graph hyp: `data/synap/copper/docs/COPPER_GRAPH_HYP_CARD.md`
+11. Copper lock: `data/synap/copper/docs/HG_WEEKLY_DECISION_LOCK.md`
+12. Oil lock: `data/synap/oil/docs/CL_BRENT_WEEKLY_DECISION_LOCK.md`
+13. `scripts/synap_oil/contract.py` — no oil paper lock; kill helper reserved
+14. TV cousins: `data/synap/copper/docs/tradingview/README.md` — two v6 scripts + v5 lock twin. Oil TV folder has no Pine.
+15. TV search ontology: `data/synap/copper/docs/tradingview/TV_RESEARCH_ONTOLOGY.md` + `tv_cards.tsv`. Append cards. Do not join to the graph hyp.
 
 No guessing. Ground facts in this repo, an official URL, or a file you
 just opened. If unknown, write `unknown — look up <page>` and stop.
@@ -61,6 +64,19 @@ Paper MOM_ONLY weekly stays PAPER (0.60/0.40, `vol_target` + `dd_halt`).
 `S2_GBM_IMPORTANCE` was CONTINUE (importance only). GBM/XGB/RF WF
 fits are KILL. v1 CONTINUE is **not** a paper lock.
 
+5. **Copper TV initial tests = learning, not a gate.** Operator ran
+   `NCU_S1_MOM_ONLY` and `NCU_MOM_FRED` on FX:COPPER and saved both
+   in TradingView (`Allow longs` / `Allow shorts` isolate sides).
+   Test A daily both: +12.2% / 45.4% DD / PF 1.019 — fails B&H.
+   FRED 12h **long-only** (CSV `2c086`): +59.66% / 37.76% DD / PF 1.35
+   / 62/108; shorts dragged the two-sided book. FRED 2h long-only
+   2020–26: +12.46% / PF 1.11 — two bull bursts, 2022 giveback, not a
+   conflict feature. 1D/5D/7D/1M/63D and ≤4h failed (search overfit).
+   Do not mint a 12h/2h file. Oil has no Pine and was not tested.
+   A later MOM_ONLY Daily “killed it” report has **no CSV** — unvalidated.
+   Report: `docs/synap/REPORT_2026-09-20_COPPER_TV.md`.
+   Search log: `data/synap/copper/docs/tradingview/tv_cards.tsv`.
+
 ### Oil — CONTINUE research, no paper lock
 
 1. `OIL_DOWNTIME_SUITE_V0` P0/P1/P2 CONTINUE on
@@ -79,6 +95,7 @@ fits are KILL. v1 CONTINUE is **not** a paper lock.
 ## Exact next action
 
 **Do not start a new Kaggle notebook tree.** Do not rerun v0 or v1.
+Do not sweep more TradingView timeframes. Oil is a later sit-down.
 
 1. Restate Engine ledger rows if not already written:
    copper S2 v0 **KILL**; copper S2 v1 `shortlist_log_h5` **CONTINUE /

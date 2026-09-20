@@ -15,6 +15,8 @@ agents should read before touching chapters or case studies.
 | [LEARNINGS_FROM_COPPER_V0.md](LEARNINGS_FROM_COPPER_V0.md) | Upgrades implied by copper v0 (SHELF counts, GraphRAG, CU gap) |
 | [NEXT_ML4T_NATIVE_EXPERIMENTS.md](NEXT_ML4T_NATIVE_EXPERIMENTS.md) | Next experiments; **C GBM = KILL**; v1 `shortlist_log_h5` = CONTINUE / `promote=false` |
 | [RECEIPT_2026-09-20_KAGGLE.md](RECEIPT_2026-09-20_KAGGLE.md) | Engine ledger: copper v0 KILL, v1 CONTINUE, stretch XGB KILL, oil CONTINUE/KILL |
+| [REPORT_2026-09-20_COPPER_TV.md](REPORT_2026-09-20_COPPER_TV.md) | Copper TV initial tests (learning only; not a promote) |
+| [TV ontology](../data/synap/copper/docs/tradingview/TV_RESEARCH_ONTOLOGY.md) | Search-layer types + growing `tv_cards.tsv` |
 | [RESEARCH_HANDOFF_PROMPT.md](RESEARCH_HANDOFF_PROMPT.md) | Paste-ready prompt for the next agent |
 | [GNN_RESOURCE_MAP.md](GNN_RESOURCE_MAP.md) | Cited papers / HF / Kaggle / official data for the copper GNN path |
 | [ASSET_FM_RESOURCE_MAP.md](ASSET_FM_RESOURCE_MAP.md) | HF / official TSFMs that might be zero-shot or fine-tuned on copper or oil; sealed only |

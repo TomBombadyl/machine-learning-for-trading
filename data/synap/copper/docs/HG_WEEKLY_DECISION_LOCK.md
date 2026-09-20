@@ -20,7 +20,8 @@ must not promote.
 This is **not** a live promote, not a research-candidate promote, and not
 a TradingView-as-Engine substitute. The Pine port
 `tradingview/HG_MOM_ONLY_Weekly.pine` is a cousin approximation (daily
-chart, Friday signal, 5-bar hold proxy).
+chart, Friday signal, 5-bar hold proxy). Operator Tester file is
+`tradingview/NCU_S1_MOM_ONLY.pine` (v6, same MR math; switch chart TF).
 
 ## Thresholds
 

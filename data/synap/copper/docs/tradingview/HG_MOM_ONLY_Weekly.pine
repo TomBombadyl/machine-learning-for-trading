@@ -1,38 +1,36 @@
-//@version=6
+//@version=5
 // Synap FinPredict research port — NOT a live promote
 // Candidate: weekly MOM_ONLY MR-framed threshold (paper lock cousin)
 // TV approximation: daily chart, Friday signal, 5-bar hold proxy
-// Pine v6: margin 0 keeps v5 Tester behavior (v6 default is 100).
 strategy("HG MOM_ONLY Weekly MR (research)", overlay=false, initial_capital=100000,
      commission_type=strategy.commission.percent, commission_value=0.04,
      default_qty_type=strategy.percent_of_equity, default_qty_value=100,
-     pyramiding=0, calc_on_every_tick=false, margin_long=0, margin_short=0)
+     pyramiding=0, calc_on_every_tick=false)
 
-float thrLong = input.float(0.60, "Long threshold (model proxy)", minval=0.5, maxval=0.9)
-float thrShort = input.float(0.40, "Short threshold (model proxy)", minval=0.1, maxval=0.5)
-int holdBars = input.int(5, "Hold bars after signal", minval=1, maxval=21)
-bool useFriOnly = input.bool(true, "Signals only on Friday")
+thrLong  = input.float(0.60, "Long threshold (model proxy)", minval=0.5, maxval=0.9)
+thrShort = input.float(0.40, "Short threshold (model proxy)", minval=0.1, maxval=0.5)
+holdBars = input.int(5, "Hold bars after signal", minval=1, maxval=21)
+useFriOnly = input.bool(true, "Signals only on Friday")
 
-float mom5 = close / close[5] - 1.0
-float mom21 = close / close[21] - 1.0
-float mom63 = close / close[63] - 1.0
+mom5  = close / close[5] - 1.0
+mom21 = close / close[21] - 1.0
+mom63 = close / close[63] - 1.0
 
 // MR frame: negate moms (same as Engine)
-float s5 = -mom5
-float s21 = -mom21
-float s63 = -mom63
+s5  = -mom5
+s21 = -mom21
+s63 = -mom63
 
-// Crude logistic stand-in: z-score blend -> [0,1] via sigmoid
-float blend = (s5 + s21 + s63) / 3.0
-float z = blend / ta.stdev(blend, 63)
-float proba = 1.0 / (1.0 + math.exp(-z))
+// Crude logistic stand-in: z-score blend → [0,1] via sigmoid
+blend = (s5 + s21 + s63) / 3.0
+z = blend / ta.stdev(blend, 63)
+proba = 1.0 / (1.0 + math.exp(-z))
 
-// COMEX daily bars can stamp Saturday on a non-NY clock — empty Tester.
-bool isFri = dayofweek(time, "America/New_York") == dayofweek.friday
-bool canSignal = not useFriOnly or isFri
+isFri = dayofweek == dayofweek.friday
+canSignal = not useFriOnly or isFri
 
-bool longCond = canSignal and proba >= thrLong
-bool shortCond = canSignal and proba <= thrShort
+longCond  = canSignal and proba >= thrLong
+shortCond = canSignal and proba <= thrShort
 
 var int barsInTrade = 0
 if strategy.position_size != 0

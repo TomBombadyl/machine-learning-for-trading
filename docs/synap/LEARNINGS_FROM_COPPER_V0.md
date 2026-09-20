@@ -145,6 +145,12 @@ The in-repo script stays IDLE without
 | Feature survival ≠ strategy survival | Ch20 teaching; copper already saw it (inventory IC vs frozen S3) |
 | Multiple pots, one join | Engine @ 20:00Z. Bots that join locally create unauditable leakage |
 | Token waste | !Flash!: read this folder + READMEs + `setup.yaml`, not 1.2k-line `research_workflow.py` |
+| TV: one Pine per strategy | Chart TF is a Tester filter. Do not mint `_1D`/`_5D`/`_1M` copies. FRED hold 5/21/63 is an input, not three files |
+| Isolated TF win = snooping | FRED 12h looked decent; 1D/5D/7D/1M/63D and ≤4h did not. Do not mint a 12h or 2h file |
+| Split long vs short before judging | FRED 12h long-only +59.66% / 37.8% DD / PF 1.35 / 62/108. Two-sided was worse. Shorts were the drag |
+| Burst windows ≠ a new TF | 2h long-only +12.5% / PF 1.11 over 2020–26. Paydays ~2020–early 2022 and ~2025–now; 2022 is giveback. Not a conflict feature |
+| Empty Daily ≠ capital | Copper daily often opens Thursday night. Friday gate must use `dayofweek` or NY `time_close`, not bar-open NY Friday only |
+| No CSV = no number | A TV “kill” without export + Properties is unvalidated. First measured A stays +12% / PF 1.02 |
 
 ---
 
@@ -185,3 +191,30 @@ ablation is not a passer (n=208).
 - Oil that day: downtime P0–P2 CONTINUE (P2 pack lost to mom on
   `sum_net`); TCN/TCNN KILL; Brent EIA logistic CONTINUE research-only.
   No oil paper lock.
+
+---
+
+## 9. 2026-09-20 — copper TV is learning, not a gate
+
+**What happened.** Two v6 cousins (`NCU_S1_MOM_ONLY`, `NCU_MOM_FRED`)
+ran on FX:COPPER. Paper-lock math (MR long/short) is the same frame;
+z/sigmoid is not sklearn. Allow-long / allow-short inputs isolate
+sides. Test A daily both-sides: +12.2% / 45.4% DD / PF 1.019 — fails
+B&H. FRED 12h **long-only** (CSV `2c086`): +59.66% / 37.76% DD /
+PF 1.35 / 62/108, all hold 21, 2014-07-18 → 2026-08-03. Two-sided 12h
+was worse (shorts dragged). FRED 2h long-only 2020–26: +12.46% /
+31.38% DD / PF 1.11 / 101/176 — two bull bursts, dead mid, 2022
+giveback. Neighbors 1D/5D/7D/1M/63D and ≤4h failed. Operator saved
+both scripts in TradingView.
+Report: [REPORT_2026-09-20_COPPER_TV.md](REPORT_2026-09-20_COPPER_TV.md).
+
+**Implied upgrade.**
+
+- Intake Tester cards as notes. TV = search. Engine = held-out gate.
+  Do not stamp CONTINUE/PROMOTE from Tester equity.
+- Split long vs short before calling a card “nice.”
+- Do not mint 12h/2h files. Do not name 2h bursts “conflict” without
+  a dated PIT column.
+- Keep one Pine per strategy. Do not port them onto oil.
+- Next Engine work is still Experiment A, then optional Cell 1
+  s2gate. Oil is a later sit-down; no oil Pine yet.

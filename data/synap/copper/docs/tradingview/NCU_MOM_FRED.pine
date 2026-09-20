@@ -1,10 +1,8 @@
 //@version=6
-// Synap FinPredict INTERIM sketch — NOT a promote
-// MOM + TV-available FRED proxies (VIX + US10Y). Full PAPER allowlist
-// (UNRATE/PERMIT/HOUST/PAYEMS/T10YIE) is Engine/FRED research — not live in Pine.
-// SKIP for Tester: hold=5; Grokbot MOM_FRED h5 sign_stable FAIL. Use MedLong 21/63.
-// Pine v6: margin 0 = v5 Tester; dynamic_requests=false keeps v5 request.security.
-strategy("NCU MOM_FRED Weekly sketch (interim PAPER)", overlay=false, initial_capital=100000,
+// MOM + VIX/US10Y cousin (Grokbot B/C). NOT a promote. Same script for hold 5 / 21 / 63.
+// Switch chart TF yourself (1D / 5D / 21D / 63D / 1M). Lookbacks are chart bars.
+// MOM side is MR (rally→SHORT, dip→LONG). VIX/US10Y are sketch weights, not sklearn.
+strategy("NCU MOM_FRED (PAPER)", overlay=false, initial_capital=100000,
      commission_type=strategy.commission.percent, commission_value=0.04,
      default_qty_type=strategy.percent_of_equity, default_qty_value=100,
      pyramiding=0, calc_on_every_tick=false, margin_long=0, margin_short=0,
@@ -12,10 +10,12 @@ strategy("NCU MOM_FRED Weekly sketch (interim PAPER)", overlay=false, initial_ca
 
 float thrLong = input.float(0.58, "Long threshold", minval=0.5, maxval=0.9)
 float thrShort = input.float(0.42, "Short threshold", minval=0.1, maxval=0.5)
-int holdBars = input.int(5, "Hold bars after Friday signal", minval=1, maxval=21)
-bool useFriOnly = input.bool(true, "Signals only on Friday")
-float wMom = input.float(0.55, "Weight MOM blend", minval=0.0, maxval=1.0)
-float wVix = input.float(0.30, "Weight VIX level z", minval=0.0, maxval=1.0)
+int holdBars = input.int(21, "Hold bars (5 / 21 / 63)", minval=1, maxval=126)
+bool useFriOnly = input.bool(true, "Friday-only (NY). Off on 5D/21D/63D/1M")
+bool allowLong = input.bool(true, "Allow longs")
+bool allowShort = input.bool(true, "Allow shorts")
+float wMom = input.float(0.50, "Weight MOM blend", minval=0.0, maxval=1.0)
+float wVix = input.float(0.35, "Weight VIX z", minval=0.0, maxval=1.0)
 float wYld = input.float(0.15, "Weight US10Y z (T10YIE proxy)", minval=0.0, maxval=1.0)
 
 float mom5 = close / close[5] - 1.0
@@ -28,15 +28,13 @@ float vix = request.security("TVC:VIX", timeframe.period, close, lookahead=barme
 float us10 = request.security("TVC:US10Y", timeframe.period, close, lookahead=barmerge.lookahead_off)
 float zVix = (vix - ta.sma(vix, 63)) / ta.stdev(vix, 63)
 float zYld = (us10 - ta.sma(us10, 63)) / ta.stdev(us10, 63)
-
-// Engine sign: VIXCLS positive IC, PAYEMS/T10YIE often negative — sketch uses +VIX, -US10Y
 float score = wMom * zMom + wVix * zVix + wYld * (-zYld)
 float proba = 1.0 / (1.0 + math.exp(-score))
 
-bool isFri = dayofweek(time, "America/New_York") == dayofweek.friday
+bool isFri = dayofweek == dayofweek.friday or dayofweek(time_close, "America/New_York") == dayofweek.friday
 bool canSignal = not useFriOnly or isFri
-bool longCond = canSignal and proba >= thrLong
-bool shortCond = canSignal and proba <= thrShort
+bool longCond = allowLong and canSignal and proba >= thrLong
+bool shortCond = allowShort and canSignal and proba <= thrShort
 
 var int barsInTrade = 0
 if strategy.position_size != 0
@@ -47,12 +45,14 @@ else
 if longCond and strategy.position_size <= 0
     strategy.close("S")
     strategy.entry("L", strategy.long)
+    barsInTrade := 0
 if shortCond and strategy.position_size >= 0
     strategy.close("L")
     strategy.entry("S", strategy.short)
+    barsInTrade := 0
 if barsInTrade >= holdBars
     strategy.close_all()
 
-plot(proba, "proba_proxy", color=color.teal)
+plot(proba, "proba_proxy", color=color.orange)
 hline(thrLong, "thrLong", color=color.green)
 hline(thrShort, "thrShort", color=color.red)

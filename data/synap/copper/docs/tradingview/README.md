@@ -1,42 +1,36 @@
-# TradingView ports — Synap HG research
+# TradingView ports — one Pine per strategy
 
-**NOT A PROMOTE.** TradingView scripts in this folder are research
-visualizations and crude cousins of Engine candidates. They are not the
-FinPredict Engine, not paper fills, and not a live book.
+**NOT A PROMOTE.** z/sigmoid cousins. Not sklearn. Never promote unless
+it beats buy-and-hold (operator rule) **and** Engine stamps promote
+(it will not from TV).
 
-## What lives here
+Switch the **chart** timeframe yourself: **1D / 5D / 21D / 63D / 1M**.
+Lookbacks 5/21/63 are chart bars, not calendar days. Uncheck Friday
+on anything that is not Daily.
 
-All `.pine` files are **v6** (`//@version=6`). Official
-[v5→v6 guide](https://www.tradingview.com/pine-script-docs/migration-guides/to-pine-version-6/):
-`margin_long/short=0` keeps the v5 Tester (v6 default is 100);
-FRED scripts set `dynamic_requests=false` so `request.security` stays
-v5-stable. z/sigmoid cousins — not sklearn.
+| Click | Strategy | Why a separate file |
+| ----- | -------- | ------------------- |
+| [NCU_S1_MOM_ONLY.pine](NCU_S1_MOM_ONLY.pine) | Paper MOM_ONLY MR | Test A. 0.60/0.40, hold 5. Rally→SHORT, dip→LONG. |
+| [NCU_MOM_FRED.pine](NCU_MOM_FRED.pine) | MOM + VIX/US10Y | Grokbot B/C. Same MR. Set hold to 5 / 21 / 63. Needs `TVC:VIX` + `TVC:US10Y`. |
+| [HG_MOM_ONLY_Weekly.pine](HG_MOM_ONLY_Weekly.pine) | Lock twin (v5) | Scaffold / paper-lock cousin. Do not “upgrade” this file. |
 
-| File | Role | Tester |
-| ---- | ---- | ------ |
-| `NCU_MOM_ONLY_Weekly.pine` | S1 paper-lock cousin. Same math as HG twin. | **A first** — NCU or HG1!, Fri, 0.60/0.40, hold 5 |
-| `HG_MOM_ONLY_Weekly.pine` | Same as NCU S1; HG title | Same as A |
-| `NCU_MOM_FRED_MedLong_Weekly.pine` | MOM + TVC:VIX + TVC:US10Y; hold 21 or 63 | **B=21 / C=63** after A. thr 0.58/0.42 |
-| `NCU_MOM_FRED_Weekly.pine` | Same proxies, hold 5 | **Skip** — h5 sign_stable FAIL |
-| `HG_MOM_COT_Weekly_README.md` | Why TV COT is not Engine COT. | No Pine |
-| `HG_DAILY_63D_LME_README.md` | Why LME work is Engine-first; TV HG is COMEX. | No Pine |
+Both v6 scripts are **long and short**. Settings: uncheck **Allow longs**
+or **Allow shorts** to isolate a side. No extra files.
 
-`CU_NCU_SHORTLIST_Weekly.pine` was on the Grokbot box but **was not
-pasted** — not stored here. Do not invent it.
+Friday on Daily uses `dayofweek` or NY `time_close` (copper daily
+often opens Thursday night). Uncheck Friday off Daily.
 
-There is no faithful Pine port of MOM_COT or LME-official features.
-Those stay in the Engine.
+12h FRED **long-only** was the nicest sketch (+59.66% / PF 1.35);
+neighbors failed. 2h long-only is weaker (+12.5% / PF 1.11) with
+two bull bursts. Do not add a 12h or 2h file. See
+`docs/synap/REPORT_2026-09-20_COPPER_TV.md`.
 
-## How to use
+Operator has both v6 scripts saved in TradingView. Update here, then
+copy-paste.
 
-1. Open NCU if listed, else COMEX HG1!, Daily.
-2. Paste `NCU_MOM_ONLY_Weekly.pine` (or the HG twin) as a *strategy*.
-3. Treat any TV backtest as a sketch. Commission 0.04% and 100% of
-   equity are research defaults, not a live risk policy.
-4. Paper lock, kill criteria, vol targeting, and dd-halt live in
-   `HG_WEEKLY_DECISION_LOCK.md` and the Engine — not in Pine.
+Growable search log (not a gate):
+[TV_RESEARCH_ONTOLOGY.md](TV_RESEARCH_ONTOLOGY.md) ·
+[tv_cards.tsv](tv_cards.tsv). Append a row per Tester card.
 
-## Never promote from TradingView
+No per-TF copies. COT/LME still README-only. Oil TV has no Pine.
 
-A green TV equity curve is not Engine evidence. Do not promote from
-Pine, from this README, or from `scripts/synap_copper/` alone.

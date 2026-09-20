@@ -16,6 +16,10 @@ Do not rerun v0 or v1. Optional leftover on this family is
 **A then B**. Receipt:
 [RECEIPT_2026-09-20_KAGGLE.md](RECEIPT_2026-09-20_KAGGLE.md). Handoff
 prompt: [RESEARCH_HANDOFF_PROMPT.md](RESEARCH_HANDOFF_PROMPT.md).
+Copper TV initial tests (learning only):
+[REPORT_2026-09-20_COPPER_TV.md](REPORT_2026-09-20_COPPER_TV.md).
+Do not treat Tester equity as a hyp. Oil TV is empty; do not port
+copper Pines.
 
 ---
 
