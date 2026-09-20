@@ -20,7 +20,7 @@ agents should read before touching chapters or case studies.
 | [RESEARCH_HANDOFF_PROMPT.md](RESEARCH_HANDOFF_PROMPT.md) | Paste-ready prompt for the next agent |
 | [GNN_RESOURCE_MAP.md](GNN_RESOURCE_MAP.md) | Cited papers / HF / Kaggle / official data for the copper GNN path |
 | [ASSET_FM_RESOURCE_MAP.md](ASSET_FM_RESOURCE_MAP.md) | HF / official TSFMs that might be zero-shot or fine-tuned on copper or oil; sealed only |
-| [API_BUDGET_TAVILY.md](API_BUDGET_TAVILY.md) | **Sept 2026:** Tavily ~80% used — minimize / avoid Tavily calls |
+| [HANDOFF_2026-09-20_S2_TABULAR.md](HANDOFF_2026-09-20_S2_TABULAR.md) | Tabular survivors CONTINUE 5/5; next = metrics delta, not GAT |
 
 ## Bot ownership (10 lines)
 
