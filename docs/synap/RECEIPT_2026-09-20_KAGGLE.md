@@ -161,8 +161,7 @@ COT+MOM / S2 v1 logistic lane. GAT hybrid stays SHELF under the S2 gate.
 
 ### S2 tabular survivors (`copper_s2_tabular_survivors_v0`) → **CONTINUE** (`promote=false`)
 
-Operator receipt 2026-09-20 (Kaggle `SystemExit 0` — success, not a
-crash; IPython exit warning is cosmetic). Same panel sha
+Operator receipt + metrics 2026-09-20. Same panel sha
 `35f1fce22bca…`, `matches_v0`. Logistic only; no GAT. v1 WF gate
 (step=26, last-5 ≥3/5). Seeds 42–46.
 
@@ -170,12 +169,22 @@ crash; IPython exit warning is cosmetic). Same panel sha
 - `arm_continue_counts`: shortlist **5**, shortlist_graph **5**,
   shortlist_graph_cot **5**
 - `no_gat=True`
+- Paths are **seed-invariant** on this frame (same sum_net/DD every
+  seed) — logistic + frozen features; 5/5 is a re-stamp, not five
+  independent draws.
 
-All three challenger arms cleared the S2 gate vs MOM on every seed.
-Graph + COT stacks did not break the shortlist CONTINUE. Still **not**
-a paper lock. Do not flip 0.60/0.40. Do not reopen TinyGAT. Optional
-next: download metrics for fold_net / sum_net deltas (graph vs
-shortlist) before Engine freezes any promote-adjacent hyp.
+| Arm | `sum_net` | maxDD | last-5 pos | vs MOM |
+| --- | --------- | ----- | ---------- | ------ |
+| MOM_ONLY | +0.1022 | 0.2605 | 3/5 | baseline |
+| shortlist | +0.4163 | **0.2011** | 4/5 | CONTINUE |
+| shortlist_graph | +0.4936 | 0.2320 | 4/5 | CONTINUE |
+| shortlist_graph_cot | **+0.6815** | 0.2320 | 4/5 | CONTINUE (best each seed) |
+
+Deltas vs shortlist: graph **+0.077** sum_net / DD **+3.1pp**; graph+COT
+**+0.265** sum_net / DD **+3.1pp**. Both still beat MOM on DD. Prefer
+`shortlist_graph_cot` as research headline stack; keep shortlist as the
+cleaner-DD fallback. Still **not** a paper lock. Do not flip 0.60/0.40.
+Do not reopen TinyGAT.
 
 ### Paper lock (unchanged)
 
