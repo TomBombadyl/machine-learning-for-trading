@@ -16,20 +16,21 @@ oil paper lock. You do not change
 ## Pickup (read in this order)
 
 1. `docs/synap/README.md`
-2. `docs/synap/RECEIPT_2026-09-20_KAGGLE.md` — **Kaggle ledger**
-3. `docs/synap/REPORT_2026-09-20_COPPER_TV.md` — copper TV initial tests (learning only)
-4. `docs/synap/LEARNINGS_FROM_COPPER_V0.md`
-5. `docs/synap/NEXT_ML4T_NATIVE_EXPERIMENTS.md` — C GBM **KILL**; v1 logistic **CONTINUE / promote=false**
-6. `docs/synap/ML4T_COPPER_OWNERSHIP_MAP.md`
-7. `docs/synap/ML4T_EVIDENCE_LOOP_GROUNDING.md`
-8. `docs/synap/GNN_RESOURCE_MAP.md` — copper GNN path; GAT only after IC → purge
-9. `docs/synap/ASSET_FM_RESOURCE_MAP.md` — HF / official TSFMs for copper/oil; sealed only. Hugging Face MCP is live (`hub_repo_search` / `hub_repo_details` as `TomBombadyl` / SynapGarden admin). Re-query the Hub; do not invent IDs. SynapGarden has zero Hub repos.
-10. Copper graph hyp: `data/synap/copper/docs/COPPER_GRAPH_HYP_CARD.md`
-11. Copper lock: `data/synap/copper/docs/HG_WEEKLY_DECISION_LOCK.md`
-12. Oil lock: `data/synap/oil/docs/CL_BRENT_WEEKLY_DECISION_LOCK.md`
-13. `scripts/synap_oil/contract.py` — no oil paper lock; kill helper reserved
-14. TV cousins: `data/synap/copper/docs/tradingview/README.md` — two v6 scripts + v5 lock twin. Oil TV folder has no Pine.
-15. TV search ontology: `data/synap/copper/docs/tradingview/TV_RESEARCH_ONTOLOGY.md` + `tv_cards.tsv`. Append cards. Do not join to the graph hyp.
+2. `docs/synap/API_BUDGET_TAVILY.md` — **Sept 2026 Tavily ~80% used; avoid Tavily calls**
+3. `docs/synap/RECEIPT_2026-09-20_KAGGLE.md` — **Kaggle ledger**
+4. `docs/synap/REPORT_2026-09-20_COPPER_TV.md` — copper TV initial tests (learning only)
+5. `docs/synap/LEARNINGS_FROM_COPPER_V0.md`
+6. `docs/synap/NEXT_ML4T_NATIVE_EXPERIMENTS.md` — C GBM **KILL**; v1 logistic **CONTINUE / promote=false**
+7. `docs/synap/ML4T_COPPER_OWNERSHIP_MAP.md`
+8. `docs/synap/ML4T_EVIDENCE_LOOP_GROUNDING.md`
+9. `docs/synap/GNN_RESOURCE_MAP.md` — copper GNN path; GAT closed under current hyp
+10. `docs/synap/ASSET_FM_RESOURCE_MAP.md` — HF / official TSFMs for copper/oil; sealed only. Hugging Face MCP is live (`hub_repo_search` / `hub_repo_details` as `TomBombadyl` / SynapGarden admin). Re-query the Hub; do not invent IDs. SynapGarden has zero Hub repos. **Do not re-Tavily this inventory.**
+11. Copper graph hyp: `data/synap/copper/docs/COPPER_GRAPH_HYP_CARD.md`
+12. Copper lock: `data/synap/copper/docs/HG_WEEKLY_DECISION_LOCK.md`
+13. Oil lock: `data/synap/oil/docs/CL_BRENT_WEEKLY_DECISION_LOCK.md`
+14. `scripts/synap_oil/contract.py` — no oil paper lock; kill helper reserved
+15. TV cousins: `data/synap/copper/docs/tradingview/README.md` — two v6 scripts + v5 lock twin. Oil TV folder has no Pine.
+16. TV search ontology: `data/synap/copper/docs/tradingview/TV_RESEARCH_ONTOLOGY.md` + `tv_cards.tsv`. Append cards. Do not join to the graph hyp.
 
 No guessing. Ground facts in this repo, an official URL, or a file you
 just opened. If unknown, write `unknown — look up <page>` and stop.
