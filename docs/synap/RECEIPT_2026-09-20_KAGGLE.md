@@ -140,14 +140,24 @@ Every seed: hybrid beat MOM on costed `sum_net` (~0.94–1.41 vs
 and MOM**. Failure mode is temporal sign stability, not undertraining.
 `cell2_blocked=true`. Do **not** rerun 20×500.
 
-### Next paste — S2 ablate (`copper_gnn_s2ablate_v0`) → **pending**
+### S2 ablate (`copper_gnn_s2ablate_v0`) → **KILL**
 
-Script: `scripts/synap_copper/copper_gnn_s2ablate_kaggle.py`. Arms
-MOM / graph_tabular / gat_emb / hybrid; epoch caps 50/150/250 +
-early-stop; seeds 42–46; fold_net + last{5,10,20}. Soft gate
-last-10 ≥4/10. After Kaggle `SystemExit 0`, stamp from
-`copper_gnn_s2ablate_memo.json` only. Cell 2 stays blocked until
-family CONTINUE **and** GAT adds over graph tabular.
+Operator receipt 2026-09-20 (Kaggle `SystemExit 0`). Same panel sha
+`35f1fce22bca…`, `matches_v0`, audit `graph_not_redundant_vs_cot`.
+Arms MOM / graph_tabular / gat_emb / hybrid; epoch caps 50/150/250 +
+early-stop; seeds 42–46; soft gate last-10 ≥4/10.
+
+- **best_epoch_cap=50; seeds_continue=0/5 floor=3**
+- `shelf_gat=False` (no arm cleared the soft gate; graph alone did not CONTINUE)
+- `cell2_blocked=True`
+
+Confirms Cell 1 deep: temporal / recent-fold sign stability kills the
+family even with shorter epochs and the graph-vs-GAT split. Do **not**
+rerun ablate, s2gate, or weak-gate. Do **not** write Cell 2 (typed GAT).
+
+Next offline: treat graph topology columns as research features only
+(already IC survivors) on the frozen Friday frame; prefer Experiment A
+COT+MOM / S2 v1 logistic lane. GAT hybrid stays SHELF under the S2 gate.
 
 ### Paper lock (unchanged)
 

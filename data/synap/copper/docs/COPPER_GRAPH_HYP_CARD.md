@@ -79,16 +79,13 @@ same IC → purge as COT+MOM. They are **not** a strategy.
    (`copper_gnn_s2gate_v0_deep`). Hybrid beat MOM on costed `sum_net`
    + maxDD every seed; last-5 fold signs were `0/5` for **both** arms.
    Do **not** rerun 20×500. Do not rerun `copper_gnn_kaggle.py`.
-5. **Kaggle next paste (ablate):** 
-   `scripts/synap_copper/copper_gnn_s2ablate_kaggle.py` on the same S2
-   notebook / Friday panel. Arms: MOM / graph_tabular / gat_emb /
-   hybrid. Epoch caps 50/150/250 + early-stop. Seeds 42–46. Emits
-   `fold_net` + last{5,10,20} signs. Soft gate uses last-10 ≥4/10.
-   Download `copper_gnn_s2ablate_memo.json`. SHELF GAT if graph tabular
-   alone owns the edge.
-6. **Kaggle Cell 2 (typed / 50 epochs):** blocked until ablate family
-   CONTINUE **and** GAT adds over graph tabular. Do not write or run
-   it before that stamp.
+5. **Kaggle S2 ablate (stamped 2026-09-20):** 
+   `copper_gnn_s2ablate_kaggle.py` → **KILL** `0/5` seeds
+   (`best_epoch_cap=50`, soft last-10 gate). `shelf_gat=False`.
+   `cell2_blocked=True`. Do **not** rerun.
+6. **Kaggle Cell 2 (typed GAT):** **blocked / closed** under this hyp.
+   No typed GAT until Engine freezes a new card with a different
+   mechanism (not more TinyGAT epochs).
 6. Chronos / PatchTST: sealed ablation on the **same** purged frame,
    later. Not this card.
 
