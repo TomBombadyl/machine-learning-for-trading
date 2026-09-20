@@ -49,6 +49,12 @@ just opened. If unknown, write `unknown — look up <page>` and stop.
 3. **Stretch Friday XGB (MOM+all ETF moms+SHFE+COT) = KILL.**
    `sum_net` −0.239 vs mom_log −0.017; maxDD worse by ≥5pp.
    Reason `no_lift_vs_mom_log,sum_net_le_0,maxDD_floor`.
+4. **`copper_gnn_kaggle_v0` = CONTINUE / `promote=false`.** Experiment A
+   COT survivors (net, pct_oi, z_52w). Graph survivors (pagerank,
+   betweenness, hhi). TinyGAT hybrid `sum_net` +0.582 vs tabular
+   −0.413; n=1300; 46 folds; cpu. **Gate ≠ S2** (no MOM / maxDD /
+   sign). Memo `panel_sha12` **confirmed** `35f1fce22bca` (`matches_v0`,
+   shape `[1303, 74]`).
 
 Paper MOM_ONLY weekly stays PAPER (0.60/0.40, `vol_target` + `dd_halt`).
 `S2_GBM_IMPORTANCE` was CONTINUE (importance only). GBM/XGB/RF WF
@@ -83,11 +89,9 @@ fits are KILL. v1 CONTINUE is **not** a paper lock.
    allowed leftover is `DEEP_TEST_MODE=robustness` in
    `scripts/synap_copper/deep_test_s2_wf_v1.py` (seeds 42–46, primary
    logistic only). Not more trees. Not XGB/RF reopen.
-3. If the operator wants a *new* copper hyp, that is **Experiment A**
-   in `NEXT_ML4T_NATIVE_EXPERIMENTS.md`: `scripts/create_experiment.py`
-   on `cme_futures`, HG subset, **free** CFTC COT, IC → purge, logistic
-   only if survivors. COT ablation (`shortlist_cot_log_h5` +0.258 on
-   n=208) is a hint, not a stamp.
+3. Experiment A + gated GAT stamped CONTINUE; sha matches S2. Do not
+   rerun. If Engine wants S2-strength evidence, score the same hybrid
+   vs MOM_ONLY on maxDD + last-5 sign — do not attach new datasets.
 4. Experiment B (SHFE as Ch8 state) only if SHFE is dense enough —
    S2 SHFE ablation was `insufficient`. Skip rather than paid scrape.
 5. Oil: no `OIL_P3` exists in this repo. Do not invent one. Do not
@@ -123,6 +127,8 @@ v1: `C:\Users\tobin\Downloads\deep_test_s2_metrics (1).json` (+ memo `(1)`, fold
 `C:\Users\tobin\Downloads\metrics_suite_v0.json`
 `C:\Users\tobin\Downloads\oil_tcnn_tcn_suite_v0.json`
 `C:\Users\tobin\Downloads\oil_downtime_suite_receipt.json`
+
+GNN 14:32Z: `C:\Users\tobin\Downloads\copper_gnn_memo.json` (+ metrics, receipt)
 
 When you finish, append one ledger line to
 `docs/synap/RECEIPT_2026-09-20_KAGGLE.md` if you stamped something new.

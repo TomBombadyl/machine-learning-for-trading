@@ -102,6 +102,36 @@ hyp from S2 shortlist: all CPER/COPX/FCX moms + SHFE + full COT.
 Reason: `no_lift_vs_mom_log,sum_net_le_0,maxDD_floor` (lift −0.222557;
 DD worse by ≥5pp; last-5 signs 3/5).
 
+### Experiment A + gated TinyGAT (`copper_gnn_kaggle_v0`) → **CONTINUE** (`promote=false`)
+
+Operator files 2026-09-20 14:32Z (`copper_gnn_memo.json` /
+`copper_gnn_metrics.json` / `copper_gnn_receipt.txt`).
+**Panel sha matches S2 v0/v1:**
+`35f1fce22bca89e161075b1d7e9c9d94755eb70bb44fb5b08bc785074234212f`,
+`sha_note=matches_v0`, path
+`/kaggle/input/datasets/synapgarden/synap-finpredict-panels-v0/deep_test_friday_panel_v0.parquet`,
+shape `[1303, 74]`. GAT fit n=1300 after dropna. cpu. 20 epochs.
+**This gate is not the S2 gate.** CONTINUE = COT IC→purge survivors
+**and** graph topology survivors **and** TinyGAT hybrid costed
+`sum_net` beat **tabular graph survivors**. No MOM / maxDD / last-5
+sign on this card.
+
+| Field | Value |
+| ----- | ----- |
+| Experiment A | **CONTINUE** — `cot_managed_money_net` IC 0.0900, `pct_oi` 0.0903, `z_52w` 0.1334 (n=337 each) |
+| COT kill | `cot_managed_money_net_chg_1w` IC 0.0298 (`abs_ic<0.03`) |
+| MOM screen | only `mom_63d` survived (IC 0.0615). `mom_5d` / `mom_21d` `abs_ic<0.03` |
+| Graph CONTINUE | `graph_pagerank` 0.0664, `graph_betweenness` −0.0437, `graph_hhi` 0.0634 (n=1300) |
+| Graph KILL | `graph_degree`, `graph_n_nodes`, `graph_n_edges` |
+| tabular `sum_net` | −0.413309 |
+| hybrid `sum_net` | +0.582117 (46 folds) |
+| promote | false |
+
+Not a paper lock. Do not retune 0.60/0.40. Do not attach extra
+datasets. Do not git-add the Downloads JSON. If Engine wants
+S2-strength evidence, score the same hybrid vs MOM_ONLY on maxDD +
+last-5 sign. Optional S2 robustness seeds still open.
+
 ### Paper lock (unchanged)
 
 `data/synap/copper/paper_mom_weekly_lock.json` +
