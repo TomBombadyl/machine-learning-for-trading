@@ -87,6 +87,11 @@ types / typed events, with event / disclosure / extract timestamps
 Ch13 names **pretraining contamination** as a leakage channel no
 temporal split can inspect. Fine for a sealed score. Not a promote.
 
+Broader HF / oil-copper TSFM inventory (2026-09-20 search):
+[ASSET_FM_RESOURCE_MAP.md](ASSET_FM_RESOURCE_MAP.md). No copper-HG
+checkpoint found. Closest finance TSFM is EXAONE Forecast for Finance
+(NC license; fine-tune untested on that card).
+
 ---
 
 ## Kaggle (machine yes, contract no)

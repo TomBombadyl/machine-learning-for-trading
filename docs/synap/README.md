@@ -17,6 +17,7 @@ agents should read before touching chapters or case studies.
 | [RECEIPT_2026-09-20_KAGGLE.md](RECEIPT_2026-09-20_KAGGLE.md) | Engine ledger: copper v0 KILL, v1 CONTINUE, stretch XGB KILL, oil CONTINUE/KILL |
 | [RESEARCH_HANDOFF_PROMPT.md](RESEARCH_HANDOFF_PROMPT.md) | Paste-ready prompt for the next agent |
 | [GNN_RESOURCE_MAP.md](GNN_RESOURCE_MAP.md) | Cited papers / HF / Kaggle / official data for the copper GNN path |
+| [ASSET_FM_RESOURCE_MAP.md](ASSET_FM_RESOURCE_MAP.md) | HF / official TSFMs that might be zero-shot or fine-tuned on copper or oil; sealed only |
 
 ## Bot ownership (10 lines)
 

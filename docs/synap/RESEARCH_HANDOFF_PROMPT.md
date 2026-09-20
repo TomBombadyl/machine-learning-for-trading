@@ -22,10 +22,11 @@ oil paper lock. You do not change
 5. `docs/synap/ML4T_COPPER_OWNERSHIP_MAP.md`
 6. `docs/synap/ML4T_EVIDENCE_LOOP_GROUNDING.md`
 7. `docs/synap/GNN_RESOURCE_MAP.md` — copper GNN path; GAT only after IC → purge
-8. Copper graph hyp: `data/synap/copper/docs/COPPER_GRAPH_HYP_CARD.md`
-9. Copper lock: `data/synap/copper/docs/HG_WEEKLY_DECISION_LOCK.md`
-10. Oil lock: `data/synap/oil/docs/CL_BRENT_WEEKLY_DECISION_LOCK.md`
-11. `scripts/synap_oil/contract.py` — no oil paper lock; kill helper reserved
+8. `docs/synap/ASSET_FM_RESOURCE_MAP.md` — HF / official TSFMs for copper/oil; sealed only. Hugging Face MCP is live (`hub_repo_search` / `hub_repo_details` as `TomBombadyl` / SynapGarden admin). Re-query the Hub; do not invent IDs. SynapGarden has zero Hub repos.
+9. Copper graph hyp: `data/synap/copper/docs/COPPER_GRAPH_HYP_CARD.md`
+10. Copper lock: `data/synap/copper/docs/HG_WEEKLY_DECISION_LOCK.md`
+11. Oil lock: `data/synap/oil/docs/CL_BRENT_WEEKLY_DECISION_LOCK.md`
+12. `scripts/synap_oil/contract.py` — no oil paper lock; kill helper reserved
 
 No guessing. Ground facts in this repo, an official URL, or a file you
 just opened. If unknown, write `unknown — look up <page>` and stop.
