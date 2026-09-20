@@ -60,6 +60,7 @@ Research inputs and generated artifacts live under `data/synap/copper/`.
 | `copper_gnn_kaggle.py` | Weak-gate stamp only (hybrid vs tabular). **Do not rerun.** 14:32Z CONTINUE / `promote=false`. Gate ≠ S2. |
 | `copper_gnn_s2gate_kaggle.py` | Cell 1 deep **KILL** `0/20` (sign_stable 0/5). **Do not rerun.** |
 | `copper_gnn_s2ablate_kaggle.py` | S2 ablate **KILL** `0/5` (`best_epoch_cap=50`). **Do not rerun.** Cell 2 closed under this hyp. `promote=false`. |
+| `copper_s2_tabular_survivors_kaggle.py` | **Next paste.** No GAT. Logistic arms: MOM / shortlist / shortlist+graph / shortlist+graph+cot. v1 WF (step=26, last-5≥3/5). Seeds 42–46. Writes `copper_s2_tabular_survivors_memo.json`. `promote=false`. |
 
 Shared candidate IDs and kill-criteria helpers live in `contract.py`.
 That module is also **not a promote**.
