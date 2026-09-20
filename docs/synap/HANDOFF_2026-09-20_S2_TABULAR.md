@@ -19,12 +19,13 @@ stack vs MOM; shortlist cleaner-DD twin.
 
 ## Exact next action
 
-1. Paste `scripts/synap_copper/copper_s2_tabular_focus_kaggle.py`
-   (expanded horizons 5/10/15/21/42/63 + lookback/corr/cost/thr/C +
-   rolling vs expanding). Family gate = primary only. Same panel
-   `35f1fce22bca…`. `promote=false`.
-2. Do **not** paste another GNN / TinyGAT / Cell 2 cell.
-3. Do **not** flip paper MOM 0.60/0.40.
+1. Paste `scripts/synap_copper/copper_s2_tabular_intraday_kaggle.py`
+   for **2h / 4h / 12h** (builds hourly `HG=F`; not Friday panel).
+   Primary gate = 4h. `promote=false`.
+2. Optional: finish focus paste (daily/weekly expanded horizons).
+3. Do **not** paste another GNN / TinyGAT / Cell 2 cell.
+4. Do **not** flip paper MOM 0.60/0.40.
+5. Do **not** mix intraday sha with Friday `35f1fce22bca…`.
 
 ## Hard do-nots
 
