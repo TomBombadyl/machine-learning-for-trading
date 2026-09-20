@@ -1,29 +1,29 @@
-# Handoff — copper S2 tabular survivors (2026-09-20)
+# Handoff — copper S2 tabular marathon (2026-09-20)
 
-**promote=false.** `copper_s2_tabular_survivors_v0` → **CONTINUE** 5/5.
-Metrics reviewed: graph/COT add costed lift; GAT stays closed.
+**promote=false.** `copper_s2_tabular_marathon_v0` → **CONTINUE** 10/10.
+Survivors CONTINUE 5/5 still stands. GAT stays closed.
 
-## Headline numbers (seed-invariant on this frame)
+## Marathon stamp
 
-| Arm | sum_net | maxDD | last-5 |
-| --- | ------: | ----: | -----: |
-| MOM | +0.102 | 0.261 | 3/5 |
-| shortlist | +0.416 | **0.201** | 4/5 |
-| shortlist_graph | +0.494 | 0.232 | 4/5 |
-| shortlist_graph_cot | **+0.682** | 0.232 | 4/5 |
+| Field | Value |
+| ----- | ----- |
+| Panel | `35f1fce22bca…` `matches_v0` |
+| Primary | h5 / step26 / 4bps / lb52 / corr0.25 / thr0.60–0.40 / C=1.0 / full |
+| Seeds continue | **10/10** (floor 6) |
+| Wall clock | `elapsed_run_s=3701` (~1.0 h) |
+| `no_gat` | True |
+| Partial | false (full run) |
 
-- vs shortlist: graph +0.077 sum_net / +3.1pp DD; +COT +0.265 / +3.1pp DD
-- vs MOM: all three CONTINUE; best arm every seed = `shortlist_graph_cot`
-- Seeds 42–46 produced identical paths (logistic + frozen features)
+Prior survivors headline (unchanged): `shortlist_graph_cot` best costed
+stack vs MOM; shortlist cleaner-DD twin.
 
 ## Exact next action
 
-1. Paste `scripts/synap_copper/copper_s2_tabular_marathon_kaggle.py`
-   (4h+ lookback×corr×cost×thr×C×LOO). Family gate = primary only.
-   Mid-run memo is rewritten after each topology. Same panel
-   `35f1fce22bca…`. `promote=false`.
-2. Optional: finish/stamp deep_v0 if that cell completed first.
-3. Do **not** reopen TinyGAT / Cell 2 / another GNN paste.
+1. Engine: freeze `shortlist_graph_cot` as research headline on Friday
+   panel `35f1fce22bca…` — still `promote=false`.
+2. Optional: if metrics JSON is available, skim LOO / lookback / cost
+   diagnostics for sensitivity notes only — do not reopen GAT.
+3. Do **not** paste another GNN / TinyGAT / Cell 2 cell.
 4. Do **not** flip paper MOM 0.60/0.40.
 
 ## Hard do-nots

@@ -1,35 +1,18 @@
 #!/usr/bin/env python3
-"""Fresh paste — S2 tabular MARATHON (4+ hour). No GAT.
+"""Fresh paste — S2 tabular MARATHON. **STAMPED CONTINUE 10/10** (2026-09-20).
 
-promote=false ALWAYS. Paste this WHOLE file as ONE new cell on the
-existing S2 notebook. Same Friday panel (sha 35f1fce22bca…).
-
-Leave the notebook running. Partial memo is rewritten after every
-topology so you can download mid-run.
+promote=false ALWAYS. Do not rerun for novelty unless Engine asks for a
+metrics LOO/lookback skim with a fresh card.
 
 Closed (do not reopen):
   TinyGAT / s2gate / s2ablate / Cell 2 typed GAT
 
-Prior stamps (do not rerun for novelty):
+Prior stamps:
   survivors_v0 CONTINUE 5/5
-  deep_v0 (if stamped) — smaller grid; this cell supersedes for stress
+  marathon_v0 CONTINUE 10/10 primary (this file) — sha 35f1fce22bca…
+  elapsed_run_s=3701; floor=6; no_gat=True
 
-What burns wall-clock (logistic only):
-  - 7 graph lookbacks × 3 corr floors → 21 full NetworkX emits
-  - Per topology: horizon × step × cost × threshold grid
-  - Primary LOO (drop each graph/COT col) + logistic C sweep
-  - Seeds 42–51 (receipt shape; paths stay near seed-invariant)
-
-Family gate = PRIMARY only:
-  h=5, step=26, cost=4bps, lookback=52, corr_min=0.25,
-  thr=(0.60,0.40), C=1.0, full shortlist_graph_cot
-  CONTINUE if ≥6/10 seeds pass that primary vs MOM.
-  All other cells are diagnostic.
-
-Download (final or mid-run):
-  copper_s2_tabular_marathon_memo.json
-  copper_s2_tabular_marathon_metrics.json
-  copper_s2_tabular_marathon_receipt.txt
+Family gate = PRIMARY only (documented below). Never PROMOTE.
 """
 from __future__ import annotations
 

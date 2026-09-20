@@ -186,6 +186,24 @@ Deltas vs shortlist: graph **+0.077** sum_net / DD **+3.1pp**; graph+COT
 cleaner-DD fallback. Still **not** a paper lock. Do not flip 0.60/0.40.
 Do not reopen TinyGAT.
 
+### S2 tabular marathon (`copper_s2_tabular_marathon_v0`) → **CONTINUE** (`promote=false`)
+
+Operator receipt + memo 2026-09-20. Same panel sha `35f1fce22bca…`,
+`matches_v0`. Logistic only; `no_gat=True`. Primary gate only
+(h5 / step26 / 4bps / lb52 / corr0.25 / thr 0.60–0.40 / C=1.0 / full
+`shortlist_graph_cot`). Seeds 42–51.
+
+- **seeds_continue_primary=10/10** floor=6
+- `elapsed_run_s=3701` (~1.0 h wall; full run `partial=false`)
+- Lookback×corr×cost×thr×C×LOO grid ran as diagnostics; family gate
+  did not require alts
+- Seed-invariant primary paths expected (logistic + frozen feats)
+
+Confirms survivors/deep primary stack under a wider stress emit.
+Still **not** a paper lock. Do not reopen TinyGAT. Optional leftover:
+upload `copper_s2_tabular_marathon_metrics.json` if Engine wants LOO /
+lookback sensitivity detail.
+
 ### Paper lock (unchanged)
 
 `data/synap/copper/paper_mom_weekly_lock.json` +
