@@ -1,17 +1,19 @@
 #!/usr/bin/env python3
 """Cell 1 — TinyGAT hybrid vs MOM_ONLY under the S2 gate.
 
-promote=false ALWAYS. Paste this WHOLE file as one new cell at the
-bottom of the existing S2 notebook. Same Friday panel only
-(sha 35f1fce22bca…). Do not rerun v0, v1, or copper_gnn_kaggle_v0.
+promote=false ALWAYS.
 
-Deep Cell 1: 20 seeds (42–61), 500 epochs/fold, step=13. Family
-CONTINUE if ≥60% of seeds beat MOM on costed sum_net AND maxDD
-≤ MOM+5pp AND last-5 fold sign ≥3/5. SHELF if graph topology is a
-COT dummy (|ρ|>0.90). Never PROMOTE. Cell 2 stays blocked unless
-this family is CONTINUE. Expect several hours on Kaggle CPU.
+STAMPED 2026-09-20: copper_gnn_s2gate_v0_deep = KILL (0/20 seeds,
+sign_stable 0/5 for hybrid AND MOM; hybrid still beat MOM sum_net+DD).
+Do NOT rerun this file. Next paste is copper_gnn_s2ablate_kaggle.py.
 
-Download after SystemExit 0:
+Historical deep Cell 1 contract (already executed):
+  20 seeds (42–61), 500 epochs/fold, step=13. Family CONTINUE if ≥60%
+  of seeds beat MOM on costed sum_net AND maxDD ≤ MOM+5pp AND last-5
+  fold sign ≥3/5. SHELF if graph topology is a COT dummy (|ρ|>0.90).
+  Never PROMOTE. Cell 2 stays blocked unless this family is CONTINUE.
+
+Download after SystemExit 0 (legacy):
   copper_gnn_s2gate_memo.json
   copper_gnn_s2gate_metrics.json
   copper_gnn_s2gate_receipt.txt

@@ -135,8 +135,14 @@ one registry hash.
 3. IC → purge (Ch7 `05_signal_evaluation` / `06_ic_inference`). Local screen: `scripts/synap_copper/experiment_a_cot_mom_purge.py`.
 4. Graph **embeddings** only if survivors: [23_knowledge_graphs/06_gnn_feature_engineering](../../23_knowledge_graphs/06_gnn_feature_engineering.py). Local adapter: `scripts/synap_copper/copper_gnn_hybrid.py`.
 5. **Kaggle weak-gate cell (stamped):** `copper_gnn_kaggle.py` — do not rerun.
-6. **Kaggle Cell 1 (next):** paste `scripts/synap_copper/copper_gnn_s2gate_kaggle.py`. S2 gate vs MOM, seeds 42–46. Cell 2 typed GAT blocked until family CONTINUE.
-7. Sequence ablation later, **same** purged frame: Ch13 Linear / PatchTST / Chronos. Not a TCN reopen.
+6. **Kaggle Cell 1 deep (stamped KILL):** `copper_gnn_s2gate_kaggle.py`
+   `0/20` — sign_stable last-5 failed for hybrid **and** MOM. Do not
+   rerun 20×500.
+7. **Kaggle next paste:** `scripts/synap_copper/copper_gnn_s2ablate_kaggle.py`
+   — MOM vs graph_tabular vs gat_emb vs hybrid; epoch caps 50/150/250;
+   seeds 42–46; fold_net series. Cell 2 typed GAT blocked until ablate
+   family CONTINUE **and** GAT adds over graph tabular.
+8. Sequence ablation later, **same** purged frame: Ch13 Linear / PatchTST / Chronos. Not a TCN reopen.
 
 Gate: IC → purge → costed WF vs MOM. CONTINUE ≠ paper lock.
 Paper MOM_ONLY weekly is unchanged.
