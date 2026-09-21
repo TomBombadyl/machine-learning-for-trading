@@ -24,6 +24,7 @@ Download (mid-run + final):
   copper_s2_tabular_focus_memo.json
   copper_s2_tabular_focus_metrics.json
   copper_s2_tabular_focus_receipt.txt
+  copper_s2_tabular_focus_hits.jsonl   # append-only CONTINUE/primary rows
 """
 from __future__ import annotations
 
@@ -476,6 +477,8 @@ def rank_rows(rows: list[dict], key: str, top: int = 12) -> list[dict]:
 def main() -> int:
     t_run = time.time()
     OUT_DIR.mkdir(parents=True, exist_ok=True)
+    hits_path = OUT_DIR / "copper_s2_tabular_focus_hits.jsonl"
+    hits_path.write_text("")  # reset append log each run
     panel_path = resolve_panel()
     panel_sha = sha256_file(panel_path)
     df = pd.read_parquet(panel_path)
