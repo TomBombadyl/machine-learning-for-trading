@@ -4,6 +4,11 @@
 promote=false ALWAYS. Paste this WHOLE file as ONE new cell on the
 existing S2 notebook. Same Friday panel (sha 35f1fce22bca…).
 
+Kaggle tip: enable **file persistence** (or download Output often).
+This cell writes ``copper_s2_tabular_focus_memo.json`` every 25 jobs and
+appends ``copper_s2_tabular_focus_hits.jsonl`` so a stalled session still
+leaves artifacts — but only if ``/kaggle/working`` is kept.
+
 Learned upgrades vs marathon/deep/survivors:
   - Primary family gate stays h5 / step26 / 4bps / lb52 / corr0.25 /
     thr0.60-0.40 / C=1.0 / shortlist_graph_cot (stamped CONTINUE).
