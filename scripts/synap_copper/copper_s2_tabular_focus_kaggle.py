@@ -1,11 +1,27 @@
 #!/usr/bin/env python3
-"""Fresh paste — S2 tabular FOCUS v1 (log-shrunk). No GAT.
+"""Fresh paste — S2 tabular FOCUS v1.1 (log-shrunk + crash-safe). No GAT.
 
 promote=false ALWAYS. Paste this WHOLE file as ONE new cell.
 Same Friday panel (sha 35f1fce22bca…).
 
-Kaggle tip: enable **file persistence** (or download Output often).
-Writes memo every 25 jobs + ``copper_s2_tabular_focus_hits.jsonl``.
+Kaggle long-run (grounded — see docs/synap/KAGGLE_LONG_RUN.md):
+  - Set notebook Persistence to **Files only** or **Variables and Files**
+    *before* the session dies
+    (Kaggle product note: https://www.kaggle.com/discussions/product-feedback/355440).
+  - Only ``/kaggle/working`` is carried over; ``/tmp`` is not.
+  - Still download Output mid-run; persistence is best-effort.
+  - Optional: Save Version → Save & Run All to archive outputs.
+
+This cell writes (atomic replace + fsync):
+  copper_s2_tabular_focus_memo.json          every 25 jobs + topo end
+  copper_s2_tabular_focus_heartbeat.json     every job
+  copper_s2_tabular_focus_primary_gate.json  as soon as PRIMARY finishes
+  copper_s2_tabular_focus_hits.jsonl         CONTINUE / primary rows
+  copper_s2_tabular_focus_metrics.json       end of run
+  copper_s2_tabular_focus_receipt.txt        end of run
+
+Grid size (v1.1): 12 topologies, ~438 cells × 5 seeds (~2190 fits).
+Primary topology alone is ~262 cells — that is the family gate.
 
 Learned from stalled focus_v0 logs (2026-09-21):
   - 63 topologies timed out (~6h → topo 28). Shrink topologies.
@@ -23,18 +39,13 @@ Primary family gate (unchanged):
   h5 / step26 / 4bps / lb52 / corr0.25 / thr0.60-0.40 / C=1.0 /
   expanding / shortlist_graph_cot
 Family CONTINUE if ≥3/5 seeds pass PRIMARY. Never PROMOTE. No GAT.
-
-Download:
-  copper_s2_tabular_focus_memo.json
-  copper_s2_tabular_focus_metrics.json
-  copper_s2_tabular_focus_receipt.txt
-  copper_s2_tabular_focus_hits.jsonl
 """
 from __future__ import annotations
 
 import hashlib
 import itertools
 import json
+import os
 import time
 from datetime import datetime, timezone
 from pathlib import Path
@@ -46,9 +57,15 @@ from scipy.stats import spearmanr
 from sklearn.linear_model import LogisticRegression
 from sklearn.preprocessing import StandardScaler
 
-VERSION = "copper_s2_tabular_focus_v1"
+VERSION = "copper_s2_tabular_focus_v1_1"
 PROMOTE = False
 V0_SHA12 = "35f1fce22bca"
+MEMO_NAME = "copper_s2_tabular_focus_memo.json"
+HEARTBEAT_NAME = "copper_s2_tabular_focus_heartbeat.json"
+PRIMARY_GATE_NAME = "copper_s2_tabular_focus_primary_gate.json"
+HITS_NAME = "copper_s2_tabular_focus_hits.jsonl"
+METRICS_NAME = "copper_s2_tabular_focus_metrics.json"
+RECEIPT_NAME = "copper_s2_tabular_focus_receipt.txt"
 DD_SLACK = 0.05
 TRAIN_MIN = 104
 TEST_SIZE = 26
@@ -465,10 +482,43 @@ def run_pair(
     }
 
 
+def atomic_write_json(path: Path, payload: dict) -> None:
+    """Write JSON via temp+replace+fsync so a kill mid-write leaves the prior file."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    tmp = path.with_suffix(path.suffix + ".tmp")
+    data = json.dumps(payload, indent=2, default=str)
+    with open(tmp, "w", encoding="utf-8") as handle:
+        handle.write(data)
+        handle.flush()
+        os.fsync(handle.fileno())
+    os.replace(tmp, path)
+
+
 def write_partial(payload: dict) -> None:
-    OUT_DIR.mkdir(parents=True, exist_ok=True)
-    (OUT_DIR / "copper_s2_tabular_focus_memo.json").write_text(
-        json.dumps(payload, indent=2, default=str)
+    atomic_write_json(OUT_DIR / MEMO_NAME, payload)
+
+
+def write_heartbeat(payload: dict) -> None:
+    atomic_write_json(OUT_DIR / HEARTBEAT_NAME, payload)
+
+
+def print_kaggle_preflight() -> None:
+    print(
+        "[focus] KAGGLE LONG-RUN CHECKLIST (do before / while this cell runs)\n"
+        "  1. Notebook Options → Persistence → Files only OR Variables and Files\n"
+        "     (must be on BEFORE the session dies; only /kaggle/working carries)\n"
+        "     cite: kaggle.com/discussions/product-feedback/355440\n"
+        "  2. Input attached: synap-finpredict-panels-v0 (Friday panel)\n"
+        "  3. Accelerator: None / CPU (this cell is sklearn logistic)\n"
+        "  4. While running, refresh Output and download if the session wobbles:\n"
+        f"       {MEMO_NAME}\n"
+        f"       {HEARTBEAT_NAME}\n"
+        f"       {PRIMARY_GATE_NAME}\n"
+        f"       {HITS_NAME}\n"
+        "  5. After finish (or stall): also grab metrics + receipt if present.\n"
+        "  6. Optional durable archive: Save Version → Save & Run All.\n"
+        f"  version={VERSION} promote=false no_gat=True",
+        flush=True,
     )
 
 
@@ -481,8 +531,18 @@ def rank_rows(rows: list[dict], key: str, top: int = 12) -> list[dict]:
 def main() -> int:
     t_run = time.time()
     OUT_DIR.mkdir(parents=True, exist_ok=True)
-    hits_path = OUT_DIR / "copper_s2_tabular_focus_hits.jsonl"
+    print_kaggle_preflight()
+    hits_path = OUT_DIR / HITS_NAME
     hits_path.write_text("")  # reset append log each run
+    write_heartbeat(
+        {
+            "promote": False,
+            "version": VERSION,
+            "phase": "boot",
+            "elapsed_run_s": 0.0,
+            "out_dir": str(OUT_DIR),
+        }
+    )
     panel_path = resolve_panel()
     panel_sha = sha256_file(panel_path)
     df = pd.read_parquet(panel_path)
@@ -514,7 +574,8 @@ def main() -> int:
         print(
             f"[focus] start version={VERSION} n={len(df)} topologies={n_topo} "
             f"(primary_first={TOPOLOGIES[0]}) horizons={available_horizons} "
-            f"derived={derived_labels} seeds={list(SEEDS)} no_gat=True",
+            f"derived={derived_labels} seeds={list(SEEDS)} no_gat=True "
+            f"expect~438 cells / ~2190 seed-fits",
             flush=True,
         )
         primary_by_seed: dict[int, dict] = {s: {} for s in SEEDS}
@@ -546,9 +607,7 @@ def main() -> int:
 
             jobs = []
             if is_primary_topo:
-                # 1) PRIMARY gate cell first
                 jobs.append({**PRIMARY})
-                # 2) h5 cost×thr×train×arm×C (log: rolling+graphx held at high cost)
                 for cost, thr, train_mode, arm_name, C in itertools.product(
                     COSTS,
                     THRESHOLDS,
@@ -578,7 +637,6 @@ def main() -> int:
                             "loo_drop": None,
                         }
                     )
-                # 3) step=13 sensitivity on h5 / headline arm only
                 for cost, train_mode in itertools.product(COSTS, TRAIN_MODES):
                     jobs.append(
                         {
@@ -595,7 +653,6 @@ def main() -> int:
                             "loo_drop": None,
                         }
                     )
-                # 4) light longer-horizon checks (log: h10 weak — keep small)
                 for horizon, train_mode in itertools.product((10, 21), TRAIN_MODES):
                     if horizon not in available_horizons:
                         continue
@@ -614,14 +671,12 @@ def main() -> int:
                             "loo_drop": None,
                         }
                     )
-                # 5) LOO / group drops on primary gate geometry
                 for drop in list(GRAPH_SURVIVORS) + list(COT_SURVIVORS) + [
                     "drop_graph",
                     "drop_cot",
                 ]:
                     jobs.append({**PRIMARY, "loo_drop": drop})
             else:
-                # Lean other topologies: h5 only (drop h10+ spam from v0 timeout)
                 for step, cost, train_mode, arm_name in itertools.product(
                     (26, 13),
                     (0.0004, 0.0008),
@@ -644,7 +699,6 @@ def main() -> int:
                         }
                     )
 
-            # de-dupe (preserve order — primary cell stays first on primary topo)
             seen = set()
             uniq = []
             for job in jobs:
@@ -710,7 +764,6 @@ def main() -> int:
                         )
 
                 n_cont = sum(1 for h in seed_hits if h.get("verdict") == "CONTINUE")
-                # compact cell (drop fold_net to keep metrics smaller)
                 compact_hits = []
                 for h in seed_hits:
                     ch = dict(h)
@@ -732,9 +785,8 @@ def main() -> int:
                     "promote": False,
                 }
                 cells_out.append(cell_row)
-                # Crash-safe: append every CONTINUE (or primary) to jsonl
                 if n_cont > 0 or is_primary(meta):
-                    with open(OUT_DIR / "copper_s2_tabular_focus_hits.jsonl", "a") as hit_f:
+                    with open(OUT_DIR / HITS_NAME, "a", encoding="utf-8") as hit_f:
                         hit_f.write(
                             json.dumps(
                                 {
@@ -761,7 +813,10 @@ def main() -> int:
                                                 [
                                                     h.get("lift_sum_net")
                                                     for h in seed_hits
-                                                    if isinstance(h.get("lift_sum_net"), (int, float))
+                                                    if isinstance(
+                                                        h.get("lift_sum_net"),
+                                                        (int, float),
+                                                    )
                                                 ]
                                                 or [0.0]
                                             )
@@ -773,6 +828,70 @@ def main() -> int:
                             )
                             + "\n"
                         )
+                        hit_f.flush()
+                        os.fsync(hit_f.fileno())
+
+                write_heartbeat(
+                    {
+                        "promote": False,
+                        "version": VERSION,
+                        "phase": "cell",
+                        "topo_i": topo_i,
+                        "topo_total": n_topo,
+                        "job_i": job_i,
+                        "n_jobs": len(uniq),
+                        "cell_key": cell_row["cell_key"],
+                        "n_seeds_continue": n_cont,
+                        "is_primary": is_primary(meta),
+                        "elapsed_run_s": round(time.time() - t_run, 1),
+                        "panel_sha12": panel_sha[:12],
+                    }
+                )
+
+                if is_primary(meta):
+                    seed_verdicts = []
+                    for seed in SEEDS:
+                        hit = primary_by_seed.get(seed) or {}
+                        seed_verdicts.append(
+                            {
+                                "seed": seed,
+                                "verdict": hit.get("verdict", "PENDING"),
+                                "primary_ok": hit.get("verdict") == "CONTINUE",
+                                "lift_sum_net": hit.get("lift_sum_net"),
+                                "sum_net": (hit.get("challenger") or {}).get("sum_net"),
+                                "mom_sum_net": (hit.get("mom") or {}).get("sum_net"),
+                            }
+                        )
+                    n_ok = sum(1 for r in seed_verdicts if r.get("verdict") == "CONTINUE")
+                    family_so_far = "CONTINUE" if n_ok >= floor else "KILL"
+                    atomic_write_json(
+                        OUT_DIR / PRIMARY_GATE_NAME,
+                        {
+                            "promote": False,
+                            "version": VERSION,
+                            "partial": True,
+                            "gate": "PRIMARY",
+                            "family_so_far": family_so_far,
+                            "n_seeds_continue": n_ok,
+                            "n_seeds": len(SEEDS),
+                            "family_pass_floor": floor,
+                            "cell_key": cell_row["cell_key"],
+                            "seed_verdicts": seed_verdicts,
+                            "elapsed_run_s": round(time.time() - t_run, 1),
+                            "panel_sha12": panel_sha[:12],
+                            "note": (
+                                "Family gate is decided by this primary cell alone. "
+                                "Later grid rows are diagnostics."
+                            ),
+                        },
+                    )
+                    print(
+                        f"[focus] PRIMARY GATE DONE family_so_far={family_so_far} "
+                        f"seeds={n_ok}/{len(SEEDS)} floor={floor} "
+                        f"wrote {PRIMARY_GATE_NAME}",
+                        flush=True,
+                    )
+
                 if job_i == 1 or job_i % 25 == 0 or job_i == len(uniq):
                     print(
                         f"[focus] topo {topo_i}/{n_topo} job={job_i}/{len(uniq)} "
@@ -780,7 +899,6 @@ def main() -> int:
                         f"run_s={time.time() - t_run:.0f}",
                         flush=True,
                     )
-                    # Mid-topology memo so a stall still leaves a download
                     seed_verdicts = []
                     for seed in SEEDS:
                         hit = primary_by_seed.get(seed) or {}
@@ -806,7 +924,9 @@ def main() -> int:
                             "corr_min": corr_min,
                             "elapsed_run_s": round(time.time() - t_run, 1),
                             "n_seeds_continue_primary": sum(
-                                1 for r in seed_verdicts if r.get("verdict") == "CONTINUE"
+                                1
+                                for r in seed_verdicts
+                                if r.get("verdict") == "CONTINUE"
                             ),
                             "n_seeds": len(SEEDS),
                             "family_pass_floor": floor,
@@ -820,7 +940,9 @@ def main() -> int:
                             ][-40:],
                             "seed_verdicts": seed_verdicts,
                             "panel_sha12": panel_sha[:12],
-                            "hits_jsonl": str(OUT_DIR / "copper_s2_tabular_focus_hits.jsonl"),
+                            "hits_jsonl": str(OUT_DIR / HITS_NAME),
+                            "primary_gate": str(OUT_DIR / PRIMARY_GATE_NAME),
+                            "heartbeat": str(OUT_DIR / HEARTBEAT_NAME),
                         }
                     )
 
@@ -870,10 +992,14 @@ def main() -> int:
             hit = primary_by_seed.get(seed) or {}
             primary = {k: v for k, v in hit.items()}
             if isinstance(primary.get("mom"), dict):
-                primary["mom"] = {k: v for k, v in primary["mom"].items() if k != "fold_net"}
+                primary["mom"] = {
+                    k: v for k, v in primary["mom"].items() if k != "fold_net"
+                }
             if isinstance(primary.get("challenger"), dict):
                 primary["challenger"] = {
-                    k: v for k, v in primary["challenger"].items() if k != "fold_net"
+                    k: v
+                    for k, v in primary["challenger"].items()
+                    if k != "fold_net"
                 }
             seed_rows.append(
                 {
@@ -893,7 +1019,6 @@ def main() -> int:
             f"elapsed_s={round(time.time() - t_run, 1)}"
         )
 
-    # Horizon / lookback summary tables from diagnostics
     by_h: dict[int, list[float]] = {}
     by_lb: dict[int, list[float]] = {}
     for hit in diagnostic_hits:
@@ -928,13 +1053,16 @@ def main() -> int:
             "survivors_v0": "CONTINUE_5/5",
             "marathon_v0": "CONTINUE_10/10",
             "s2ablate": "KILL",
+            "focus_v0_stall": "timeout_topo25_mid_primary",
             "upgrades": [
-                "more_horizons_incl_derived",
-                "wider_lookback_corr_cost_thr_C",
+                "primary_topology_first",
+                "shrunk_topologies_12",
                 "rolling_vs_expanding",
                 "arm_ladder",
                 "loo_and_group_drops",
-                "memo_rank_tables",
+                "mid_job_atomic_memo",
+                "heartbeat_every_job",
+                "primary_gate_early_file",
             ],
         },
         "gate": (
@@ -947,8 +1075,7 @@ def main() -> int:
         "grids": {
             "horizons": list(HORIZONS),
             "available_horizons": available_horizons if not missing_core else [],
-            "lookbacks": list(LOOKBACKS),
-            "corr_mins": list(CORR_MINS),
+            "topologies": [{"lookback": lb, "corr_min": c} for lb, c in TOPOLOGIES],
             "steps": list(STEPS),
             "costs": list(COSTS),
             "thresholds": [list(t) for t in THRESHOLDS],
@@ -993,8 +1120,11 @@ def main() -> int:
             for r in seed_rows
         ],
         "paths": {
-            "metrics": str(OUT_DIR / "copper_s2_tabular_focus_metrics.json"),
-            "memo": str(OUT_DIR / "copper_s2_tabular_focus_memo.json"),
+            "metrics": str(OUT_DIR / METRICS_NAME),
+            "memo": str(OUT_DIR / MEMO_NAME),
+            "primary_gate": str(OUT_DIR / PRIMARY_GATE_NAME),
+            "heartbeat": str(OUT_DIR / HEARTBEAT_NAME),
+            "hits_jsonl": str(OUT_DIR / HITS_NAME),
         },
     }
     receipt = (
@@ -1006,17 +1136,23 @@ def main() -> int:
         f"no_gat=True\n"
         f"elapsed_run_s={metrics['elapsed_run_s']}\n"
     )
-    (OUT_DIR / "copper_s2_tabular_focus_metrics.json").write_text(
-        json.dumps(metrics, indent=2, default=str)
+    atomic_write_json(OUT_DIR / METRICS_NAME, metrics)
+    atomic_write_json(OUT_DIR / MEMO_NAME, memo)
+    (OUT_DIR / RECEIPT_NAME).write_text(receipt)
+    write_heartbeat(
+        {
+            "promote": False,
+            "version": VERSION,
+            "phase": "done",
+            "verdict": family,
+            "elapsed_run_s": metrics["elapsed_run_s"],
+            "panel_sha12": panel_sha[:12],
+        }
     )
-    (OUT_DIR / "copper_s2_tabular_focus_memo.json").write_text(
-        json.dumps(memo, indent=2, default=str)
-    )
-    (OUT_DIR / "copper_s2_tabular_focus_receipt.txt").write_text(receipt)
+    print(receipt, flush=True)
     print(json.dumps(memo, indent=2, default=str), flush=True)
-    print("RECEIPT:\n" + receipt, flush=True)
     return 0
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())

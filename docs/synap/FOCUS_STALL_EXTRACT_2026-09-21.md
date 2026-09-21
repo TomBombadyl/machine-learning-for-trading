@@ -1,9 +1,29 @@
 # Focus stall extract — 2026-09-21 (from operator log only)
 
-**promote=false.** No `copper_s2_tabular_focus_memo.json` was uploaded.
-This note salvages what the stdout log shows before the session stalled.
+**promote=false.** No `copper_s2_tabular_focus_memo.json` was uploaded
+from the stalled focus session.
 
-## Where it died
+## Operator re-upload 2026-09-21 (`results.zip`)
+
+Recovered Kaggle Output pack was **not** the focus stall. It was the
+already-stamped copper S2 deep_test **v0** receipt:
+
+| File in zip | Role |
+| ----------- | ---- |
+| `ML4T_RECEIPT_CARD.md` / `.txt` | v0 card |
+| `deep_test_s2_memo.json` | `verdict=KILL`, `passers=[]` |
+| `deep_test_s2_metrics.json` | full scoreboard + COT ablation |
+| `deep_test_s2_fold_table.csv` / `.json` | folds |
+
+Matches `docs/synap/RECEIPT_2026-09-20_KAGGLE.md` § C v0 (built
+`2026-09-20T05:32:12Z`, panel `35f1fce22bca…`, headline
+`shortlist_log_h5` sign **2/5** → KILL). COT ablation note:
+`shortlist_cot_log_h5` sign-stable 3/5 (ablation only — not a passer).
+
+**Still missing for the focus stall:** any
+`copper_s2_tabular_focus_*` memo / metrics / hits.
+
+## Where focus_v0 died (stdout only)
 
 | Field | Value |
 | ----- | ----- |
@@ -12,19 +32,11 @@ This note salvages what the stdout log shows before the session stalled.
 | Topology | `lookback=52`, `corr_min=0.25` (**primary topology**) |
 | Job phase | dense primary extras (costs/thr/C/arms); had reached **h10** rows |
 
-Checkpoint design bug (since fixed): memo was only rewritten at
-**end of topology**. Mid-primary stall → disk memo likely still at
-topo **24**, and in-RAM CONTINUE hits for topo 25 were lost unless
-Kaggle Output still has an older memo.
-
-**Please download from `/kaggle/working` if anything remains:**
-- `copper_s2_tabular_focus_memo.json` (partial)
-- any `copper_s2_tabular_focus_metrics.json`
-- paste more stdout if available
+Checkpoint design bug (**fixed in focus v1 / v1.1**): memo was only
+rewritten at **end of topology**. Mid-primary stall → disk memo likely
+still at topo **24**.
 
 ## What the log still proves (topo 25 / lb52 / corr0.25)
-
-Printed every 25 jobs. In the shared window (~job 1000–1350):
 
 ### CONTINUE 5/5 (keep)
 
@@ -33,34 +45,17 @@ Printed every 25 jobs. In the shared window (~job 1000–1350):
 | `h5_step26_cost12bps_…_thr0.6-0.4_C1.0_rolling_arm-shortlist_graphx…` | **5/5** |
 | `h5_step26_cost16bps_…_thr0.6-0.4_C1.0_rolling_arm-shortlist_graphx…` | **5/5** |
 
-Plain English: on the **1-week** label, with **rolling** train and the
-**expanded graph+COT** arm, the stack still beat MOM at **high costs**
-(12–16 bps) under the usual 0.60/0.40 thresholds and C=1.
-
 ### KILL / cont=0/5 (same window)
 
-Most neighbors failed, including:
-
-- higher thr bands (0.65/0.35, 0.62/0.38, …) often **0/5**
-- many `expanding` + plain `shortlist` / `shortlist_graph` at 10–16 bps **0/5**
-- LOO `drop-*` rows shown **0/5**
-- first **h10** rows at 2 bps already **0/5** (matches prior lesson:
-  longer-than-5d labels are weak)
-
-## What we do **not** know from this log
-
-- Whether **primary gate** passed:
-  `h5 / step26 / 4bps / lb52 / corr0.25 / thr0.60-0.40 / C1 /
-  expanding / shortlist_graph_cot`
-  (that exact cell is not in the pasted lines)
-- Results for topologies 1–24 (only “25/63” implies they finished;
-  need memo for counts)
-- Lookback/corr ranking tables
+Most neighbors failed: extreme thr bands, many expanding plain
+shortlist rows at 10–16 bps, LOO drops, early h10 at 2 bps.
 
 ## Next
 
-1. Operator: download any leftover focus memo/metrics from Kaggle Output.
-2. Re-paste **updated** `copper_s2_tabular_focus_kaggle.py` (mid-job
-   memo + `focus_hits.jsonl`) — or run the smaller intraday 2h/4h/12h
-   cell if hourly is the priority.
+1. Paste **focus v1.1** (`copper_s2_tabular_focus_v1_1`) with Persistence
+   **Files only** or **Variables and Files** — see
+   `docs/synap/KAGGLE_LONG_RUN.md`.
+2. After PRIMARY finishes, download
+   `copper_s2_tabular_focus_primary_gate.json` even if the rest is still
+   running.
 3. Do not reopen GAT. Do not promote from partial logs.

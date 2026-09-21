@@ -21,6 +21,8 @@ agents should read before touching chapters or case studies.
 | [GNN_RESOURCE_MAP.md](GNN_RESOURCE_MAP.md) | Cited papers / HF / Kaggle / official data for the copper GNN path |
 | [ASSET_FM_RESOURCE_MAP.md](ASSET_FM_RESOURCE_MAP.md) | HF / official TSFMs that might be zero-shot or fine-tuned on copper or oil; sealed only |
 | [HANDOFF_2026-09-20_S2_TABULAR.md](HANDOFF_2026-09-20_S2_TABULAR.md) | Tabular marathon CONTINUE 10/10; headline = shortlist_graph_cot; GAT closed |
+| [KAGGLE_LONG_RUN.md](KAGGLE_LONG_RUN.md) | Persistence + Output download checklist for multi-hour paste cells |
+| [FOCUS_STALL_EXTRACT_2026-09-21.md](FOCUS_STALL_EXTRACT_2026-09-21.md) | focus_v0 stall salvage; `results.zip` = v0 KILL reconfirm |
 
 ## Bot ownership (10 lines)
 

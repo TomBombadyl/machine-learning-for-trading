@@ -24,6 +24,9 @@ to “fix” `cuda_boot`.
 
 ### C — Deep Test S2 purged WF v0 → **KILL**
 
+- **Re-confirmed 2026-09-21:** operator re-downloaded Kaggle Output as
+  `results.zip` (`ML4T_RECEIPT_CARD.md`, `deep_test_s2_memo.json`,
+  metrics + fold table). Same stamp as below — not a focus memo.
 - Panel: `deep_test_friday_panel_v0.parquet` sha256
   `35f1fce22bca89e161075b1d7e9c9d94755eb70bb44fb5b08bc785074234212f`
   shape `[1303, 74]`, 2000-09-01 → 2026-09-11.

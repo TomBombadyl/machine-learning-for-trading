@@ -19,16 +19,19 @@ stack vs MOM; shortlist cleaner-DD twin.
 
 ## Exact next action
 
-## Exact next action
-
-1. If the focus session stalled: download any leftover
-   `copper_s2_tabular_focus_memo.json` from Kaggle Output and see
+1. Paste **focus v1.1** whole file
+   `scripts/synap_copper/copper_s2_tabular_focus_kaggle.py`
+   (`version=copper_s2_tabular_focus_v1_1`). Enable Kaggle Persistence
+   **Files only** or **Variables and Files** first — see
+   `docs/synap/KAGGLE_LONG_RUN.md`.
+2. Operator `results.zip` (2026-09-21) reconfirmed S2 deep_test **v0
+   KILL** only — not a focus memo. Focus stall notes remain in
    `docs/synap/FOCUS_STALL_EXTRACT_2026-09-21.md`.
-2. Re-paste updated `copper_s2_tabular_focus_kaggle.py` (mid-job memo +
-   hits.jsonl) **or** paste intraday 2h/4h/12h cell.
-3. Do **not** paste another GNN / TinyGAT / Cell 2 cell.
-4. Do **not** flip paper MOM 0.60/0.40.
-5. Do **not** mix intraday sha with Friday `35f1fce22bca…`.
+3. Mid-run: download `primary_gate` / `memo` / `heartbeat` / `hits.jsonl`
+   from Output. Family gate is PRIMARY only.
+4. Do **not** paste another GNN / TinyGAT / Cell 2 cell.
+5. Do **not** flip paper MOM 0.60/0.40.
+6. Do **not** mix intraday sha with Friday `35f1fce22bca…`.
 
 ## Hard do-nots
 
