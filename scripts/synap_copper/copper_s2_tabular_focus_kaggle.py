@@ -1,35 +1,34 @@
 #!/usr/bin/env python3
-"""Fresh paste — S2 tabular FOCUS (expanded params + timeframes). No GAT.
+"""Fresh paste — S2 tabular FOCUS v1 (log-shrunk). No GAT.
 
-promote=false ALWAYS. Paste this WHOLE file as ONE new cell on the
-existing S2 notebook. Same Friday panel (sha 35f1fce22bca…).
+promote=false ALWAYS. Paste this WHOLE file as ONE new cell.
+Same Friday panel (sha 35f1fce22bca…).
 
 Kaggle tip: enable **file persistence** (or download Output often).
-This cell writes ``copper_s2_tabular_focus_memo.json`` every 25 jobs and
-appends ``copper_s2_tabular_focus_hits.jsonl`` so a stalled session still
-leaves artifacts — but only if ``/kaggle/working`` is kept.
+Writes memo every 25 jobs + ``copper_s2_tabular_focus_hits.jsonl``.
 
-Learned upgrades vs marathon/deep/survivors:
-  - Primary family gate stays h5 / step26 / 4bps / lb52 / corr0.25 /
-    thr0.60-0.40 / C=1.0 / shortlist_graph_cot (stamped CONTINUE).
-  - Expand label timeframes: derive fwd_ret_{10,15,21,42,63}d from
-    close_hg when missing (panel usually ships 5/21/63 only).
-  - Expand lookbacks, corr floors, costs, thresholds, C, steps.
-  - Arm ladder on every cell: mom / shortlist / shortlist_graph /
-    shortlist_graph_cot (not headline-only).
-  - LOO + leave-group (drop_graph / drop_cot) on primary topology.
-  - Expanding vs rolling train window (marathon was expanding only).
-  - Seeds 42-46 only (logistic is seed-invariant on frozen feats).
-  - Memo ranks horizons / lookbacks / LOO by sum_net lift vs MOM.
-  - No TinyGAT / Cell 2.
+Learned from stalled focus_v0 logs (2026-09-21):
+  - 63 topologies timed out (~6h → topo 28). Shrink topologies.
+  - Run **primary topology first** (lb52/corr0.25) so a timeout still
+    leaves a family verdict.
+  - h5 + rolling + graphx CONTINUED even at 12–16 bps; keep cost ladder
+    on h5, prefer rolling+expanding both.
+  - h10 / corr0.45 lean rows were mostly 0/5 — drop wide horizon×corr
+    spam; only light h10/h21 checks on primary.
+  - Extreme thr bands (0.65/0.35 etc.) mostly 0/5 — keep 0.55/0.45 and
+    0.60/0.40 only.
+  - Mid-job checkpoints (v0 lacked them mid-primary).
 
-Family CONTINUE if ≥3/5 seeds pass PRIMARY. All other cells diagnostic.
+Primary family gate (unchanged):
+  h5 / step26 / 4bps / lb52 / corr0.25 / thr0.60-0.40 / C=1.0 /
+  expanding / shortlist_graph_cot
+Family CONTINUE if ≥3/5 seeds pass PRIMARY. Never PROMOTE. No GAT.
 
-Download (mid-run + final):
+Download:
   copper_s2_tabular_focus_memo.json
   copper_s2_tabular_focus_metrics.json
   copper_s2_tabular_focus_receipt.txt
-  copper_s2_tabular_focus_hits.jsonl   # append-only CONTINUE/primary rows
+  copper_s2_tabular_focus_hits.jsonl
 """
 from __future__ import annotations
 
@@ -47,7 +46,7 @@ from scipy.stats import spearmanr
 from sklearn.linear_model import LogisticRegression
 from sklearn.preprocessing import StandardScaler
 
-VERSION = "copper_s2_tabular_focus_v0"
+VERSION = "copper_s2_tabular_focus_v1"
 PROMOTE = False
 V0_SHA12 = "35f1fce22bca"
 DD_SLACK = 0.05
@@ -56,7 +55,6 @@ TEST_SIZE = 26
 SEEDS = tuple(range(42, 47))
 FAMILY_MIN_FRAC = 0.60
 
-# --- Expanded parameter grids (learned: stress width, gate stays narrow) ---
 PRIMARY = {
     "horizon": 5,
     "step": 26,
@@ -70,21 +68,23 @@ PRIMARY = {
     "loo_drop": None,
     "arm": "shortlist_graph_cot",
 }
-HORIZONS = (5, 10, 15, 21, 42, 63)  # derive missing from close_hg
-LOOKBACKS = (13, 26, 39, 52, 65, 78, 91, 104, 130)
-CORR_MINS = (0.10, 0.15, 0.20, 0.25, 0.30, 0.35, 0.45)
-STEPS = (26, 13, 8)
-COSTS = (0.0002, 0.0004, 0.0006, 0.0008, 0.0010, 0.0012, 0.0016)
-THRESHOLDS = (
-    (0.55, 0.45),
-    (0.58, 0.42),
-    (0.60, 0.40),
-    (0.62, 0.38),
-    (0.65, 0.35),
-)
-C_GRID = (0.1, 0.25, 0.5, 1.0, 2.0, 4.0, 8.0)
+# Derive extras if missing; lean grids mostly use h5.
+HORIZONS = (5, 10, 21)
+# Primary topology FIRST, then a short lookback×corr list (no 0.45 — log KILL).
+_LOOKBACKS = (26, 52, 78, 104)
+_CORR_MINS = (0.15, 0.25, 0.35)
+TOPOLOGIES: list[tuple[int, float]] = [(52, 0.25)] + [
+    (lb, c)
+    for lb in _LOOKBACKS
+    for c in _CORR_MINS
+    if not (lb == 52 and abs(c - 0.25) < 1e-12)
+]
+STEPS = (26, 13)
+COSTS = (0.0004, 0.0006, 0.0008, 0.0012, 0.0016)  # kept high costs (log CONTINUE)
+THRESHOLDS = ((0.55, 0.45), (0.60, 0.40))
+C_GRID = (0.25, 1.0, 4.0)
 TRAIN_MODES = ("expanding", "rolling")
-ROLLING_TRAIN = 156  # ~3y Fridays when train_mode=rolling
+ROLLING_TRAIN = 156
 
 MOM_COLS = ["mom_5d", "mom_21d", "mom_63d"]
 SHORTLIST_EXTRA = ["cper_mom_21d", "fcx_mom_63d"]
@@ -94,7 +94,6 @@ COT_SURVIVORS = [
     "cot_managed_money_pct_oi",
     "cot_managed_money_z_52w",
 ]
-# Optional extras if present on panel (expanded variables)
 EXTRA_CANDIDATES = [
     "copx_mom_21d",
     "cot_managed_money_net_chg_1w",
@@ -511,21 +510,24 @@ def main() -> int:
         family = "SHELF"
         note = f"missing_core={missing_core} horizons={available_horizons}"
     else:
-        n_topo = len(LOOKBACKS) * len(CORR_MINS)
+        n_topo = len(TOPOLOGIES)
         print(
-            f"[focus] start n={len(df)} topologies={n_topo} "
-            f"horizons={available_horizons} derived={derived_labels} "
-            f"seeds={list(SEEDS)} expand_params=True no_gat=True",
+            f"[focus] start version={VERSION} n={len(df)} topologies={n_topo} "
+            f"(primary_first={TOPOLOGIES[0]}) horizons={available_horizons} "
+            f"derived={derived_labels} seeds={list(SEEDS)} no_gat=True",
             flush=True,
         )
         primary_by_seed: dict[int, dict] = {s: {} for s in SEEDS}
 
-        for topo_i, (lookback, corr_min) in enumerate(
-            itertools.product(LOOKBACKS, CORR_MINS), start=1
-        ):
+        for topo_i, (lookback, corr_min) in enumerate(TOPOLOGIES, start=1):
             t_topo = time.time()
+            is_primary_topo = (
+                lookback == PRIMARY["lookback"]
+                and abs(corr_min - PRIMARY["corr_min"]) < 1e-12
+            )
             print(
-                f"[focus] topology {topo_i}/{n_topo} lb={lookback} corr={corr_min}",
+                f"[focus] topology {topo_i}/{n_topo} lb={lookback} corr={corr_min} "
+                f"primary_topo={is_primary_topo}",
                 flush=True,
             )
             featured = emit_graph_features(df, lookback=lookback, corr_min=corr_min)
@@ -543,39 +545,11 @@ def main() -> int:
                 continue
 
             jobs = []
-            # Every topology: timeframe sweep (learned ask) + arm ladder +
-            # train_mode, on a lean cost/thr/step spine — not full cartesian.
-            lean_costs = (0.0004, 0.0008)
-            lean_thr = ((0.60, 0.40), (0.55, 0.45))
-            lean_steps = (26, 13)
-            for horizon, step, cost, thr, train_mode, arm_name in itertools.product(
-                available_horizons,
-                lean_steps,
-                lean_costs,
-                lean_thr,
-                TRAIN_MODES,
-                ("shortlist", "shortlist_graph", "shortlist_graph_cot"),
-            ):
-                jobs.append(
-                    {
-                        "horizon": horizon,
-                        "step": step,
-                        "cost_one_way": cost,
-                        "lookback": lookback,
-                        "corr_min": corr_min,
-                        "thr_long": thr[0],
-                        "thr_short": thr[1],
-                        "C": 1.0,
-                        "train_mode": train_mode,
-                        "arm": arm_name,
-                        "loo_drop": None,
-                    }
-                )
-
-            # Primary topology only: wider cost/thr/C + LOO (still not full cartesian)
-            if lookback == PRIMARY["lookback"] and abs(corr_min - PRIMARY["corr_min"]) < 1e-12:
-                for horizon, cost, thr, train_mode, arm_name, C in itertools.product(
-                    available_horizons,
+            if is_primary_topo:
+                # 1) PRIMARY gate cell first
+                jobs.append({**PRIMARY})
+                # 2) h5 cost×thr×train×arm×C (log: rolling+graphx held at high cost)
+                for cost, thr, train_mode, arm_name, C in itertools.product(
                     COSTS,
                     THRESHOLDS,
                     TRAIN_MODES,
@@ -584,15 +558,14 @@ def main() -> int:
                         "shortlist_graph",
                         "shortlist_graph_cot",
                         "shortlist_graphx_cot",
-                        "shortlist_graph_cot_extra",
                     ),
-                    (0.25, 1.0, 4.0),
+                    C_GRID,
                 ):
                     if arm_name not in arms or not arms[arm_name]:
                         continue
                     jobs.append(
                         {
-                            "horizon": horizon,
+                            "horizon": 5,
                             "step": 26,
                             "cost_one_way": cost,
                             "lookback": lookback,
@@ -605,13 +578,55 @@ def main() -> int:
                             "loo_drop": None,
                         }
                     )
-                # finer steps on h5 only
-                for step, cost, thr, train_mode, C in itertools.product(
-                    (13, 8),
-                    COSTS,
-                    THRESHOLDS,
+                # 3) step=13 sensitivity on h5 / headline arm only
+                for cost, train_mode in itertools.product(COSTS, TRAIN_MODES):
+                    jobs.append(
+                        {
+                            "horizon": 5,
+                            "step": 13,
+                            "cost_one_way": cost,
+                            "lookback": lookback,
+                            "corr_min": corr_min,
+                            "thr_long": 0.60,
+                            "thr_short": 0.40,
+                            "C": 1.0,
+                            "train_mode": train_mode,
+                            "arm": "shortlist_graph_cot",
+                            "loo_drop": None,
+                        }
+                    )
+                # 4) light longer-horizon checks (log: h10 weak — keep small)
+                for horizon, train_mode in itertools.product((10, 21), TRAIN_MODES):
+                    if horizon not in available_horizons:
+                        continue
+                    jobs.append(
+                        {
+                            "horizon": horizon,
+                            "step": 26,
+                            "cost_one_way": 0.0004,
+                            "lookback": lookback,
+                            "corr_min": corr_min,
+                            "thr_long": 0.60,
+                            "thr_short": 0.40,
+                            "C": 1.0,
+                            "train_mode": train_mode,
+                            "arm": "shortlist_graph_cot",
+                            "loo_drop": None,
+                        }
+                    )
+                # 5) LOO / group drops on primary gate geometry
+                for drop in list(GRAPH_SURVIVORS) + list(COT_SURVIVORS) + [
+                    "drop_graph",
+                    "drop_cot",
+                ]:
+                    jobs.append({**PRIMARY, "loo_drop": drop})
+            else:
+                # Lean other topologies: h5 only (drop h10+ spam from v0 timeout)
+                for step, cost, train_mode, arm_name in itertools.product(
+                    (26, 13),
+                    (0.0004, 0.0008),
                     TRAIN_MODES,
-                    (0.25, 1.0, 4.0),
+                    ("shortlist_graph_cot", "shortlist"),
                 ):
                     jobs.append(
                         {
@@ -620,41 +635,16 @@ def main() -> int:
                             "cost_one_way": cost,
                             "lookback": lookback,
                             "corr_min": corr_min,
-                            "thr_long": thr[0],
-                            "thr_short": thr[1],
-                            "C": C,
+                            "thr_long": 0.60,
+                            "thr_short": 0.40,
+                            "C": 1.0,
                             "train_mode": train_mode,
-                            "arm": "shortlist_graph_cot",
+                            "arm": arm_name,
                             "loo_drop": None,
                         }
                     )
-                drop_list = list(GRAPH_SURVIVORS) + list(COT_SURVIVORS) + [
-                    "drop_graph",
-                    "drop_cot",
-                ]
-                for drop in drop_list:
-                    jobs.append(
-                        {
-                            **{
-                                k: PRIMARY[k]
-                                for k in (
-                                    "horizon",
-                                    "step",
-                                    "cost_one_way",
-                                    "lookback",
-                                    "corr_min",
-                                    "thr_long",
-                                    "thr_short",
-                                    "C",
-                                    "train_mode",
-                                    "arm",
-                                )
-                            },
-                            "loo_drop": drop,
-                        }
-                    )
 
-            # de-dupe
+            # de-dupe (preserve order — primary cell stays first on primary topo)
             seen = set()
             uniq = []
             for job in jobs:
@@ -663,6 +653,11 @@ def main() -> int:
                     continue
                 seen.add(key)
                 uniq.append(job)
+            print(
+                f"[focus] topo {topo_i}/{n_topo} n_jobs={len(uniq)} "
+                f"first={cell_key(uniq[0]) if uniq else None}",
+                flush=True,
+            )
 
             cells_out = []
             for job_i, meta in enumerate(uniq, start=1):
