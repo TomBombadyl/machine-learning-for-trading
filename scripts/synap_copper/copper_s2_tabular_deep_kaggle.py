@@ -1,37 +1,44 @@
 #!/usr/bin/env python3
-"""Fresh paste — S2 tabular survivors (no GAT). Learning from GNN KILLs.
+"""Fresh paste — S2 tabular deep stress (no GAT). Longer/better than v0 stamp.
 
 promote=false ALWAYS. Paste this WHOLE file as one new cell on the
 existing S2 notebook. Same Friday panel (sha 35f1fce22bca…).
 
-Closed (do not rerun):
-  copper_gnn_kaggle.py / copper_gnn_s2gate / copper_gnn_s2ablate
-  deep_test_s2_wf_v0 / v1 / XGB-RF
+Prior stamp (do not rerun for novelty):
+  copper_s2_tabular_survivors_kaggle.py → CONTINUE 5/5, seed-invariant
+  on this frame (logistic + frozen feats). Headline = shortlist_graph_cot.
 
-What we learned:
-  - TinyGAT fails the S2 temporal gate (deep 0/20, ablate 0/5).
-  - Graph IC survivors still exist (pagerank / betweenness / hhi).
-  - COT managed-money trio survived Experiment A.
-  - S2 v1 CONTINUE is shortlist_log_h5 (logistic). Use v1 WF geometry
-    (step=26, last-5 ≥3/5), not ablate step=13 / last-10 soft gate.
+Closed (do not reopen):
+  copper_gnn_kaggle / s2gate / s2ablate / TinyGAT / Cell 2 typed GAT
 
-Arms (logistic only, fwd_ret_5d):
-  A  MOM_ONLY
-  B  shortlist          # v1 passer feats: mom + cper_mom_21d + fcx_mom_63d
-  C  shortlist_graph    # + frozen graph survivors
-  D  shortlist_graph_cot  # + COT survivors
+What this cell adds (stress grid, still logistic only):
+  - Horizons: fwd_ret_5d always; 21d / 63d if columns exist
+  - Steps: 26 (v1 primary) and 13 (ablate geometry — diagnostic only)
+  - Costs: 4 bps (primary) and 8 bps one-way turnover
+  - Each challenger vs MOM on a **shared** finite-row mask for that pair
+  - NaN → 0 after that mask (scaler-safe)
+  - Headline arm: shortlist_graph_cot (shortlist also scored as twin)
 
-Seeds 42–46. Family CONTINUE if ≥3/5 seeds have any of B/C/D CONTINUE
-vs MOM. Never PROMOTE. No Cell 2 / no GAT.
+Architecture (I/O):
+  IN:  deep_test_friday_panel_v0.parquet (sha 35f1fce22bca…)
+       frozen feat lists (MOM / shortlist / graph / COT survivors)
+  MID: NetworkX snapshot cols (pagerank/betweenness/hhi) PIT lookback=52
+       purged expanding WF; embargo = max(2, (h+4)//5)
+       logistic only — **no TinyGAT / no Cell 2**
+  OUT: memo / metrics / receipt under /kaggle/working
 
-Note: logistic + frozen features are seed-invariant on this frame —
-5/5 is a re-stamp, not five independent draws. For horizon/step/cost
-stress use ``copper_s2_tabular_deep_kaggle.py``.
+Seeds 42–46 still run (receipt shape). Expect near-identical paths under
+fixed C / frozen features — diversity comes from the grid, not seeds.
 
-Download after success (no SystemExit):
-  copper_s2_tabular_survivors_memo.json
-  copper_s2_tabular_survivors_metrics.json
-  copper_s2_tabular_survivors_receipt.txt
+Family CONTINUE if ≥3/5 seeds have shortlist_graph_cot CONTINUE on the
+**primary** cell only (h=5, step=26, cost=4bps). Alternate grid cells
+are reported for stress; they do **not** gate the family (h21/h63 and
+step=13 already fail this panel under S2 stamps). Never PROMOTE.
+
+Download after success:
+  copper_s2_tabular_deep_memo.json
+  copper_s2_tabular_deep_metrics.json
+  copper_s2_tabular_deep_receipt.txt
 """
 from __future__ import annotations
 
@@ -48,20 +55,22 @@ from scipy.stats import spearmanr
 from sklearn.linear_model import LogisticRegression
 from sklearn.preprocessing import StandardScaler
 
-VERSION = "copper_s2_tabular_survivors_v0"
+VERSION = "copper_s2_tabular_deep_v0"
 PROMOTE = False
 V0_SHA12 = "35f1fce22bca"
-COST_ONE_WAY = 0.0004
 DD_SLACK = 0.05
 THR_LONG = 0.60
 THR_SHORT = 0.40
 TRAIN_MIN = 104
 TEST_SIZE = 26
-STEP = 26  # v1 geometry (not ablate step=13)
 LOOKBACK = 52
 CORR_MIN = 0.25
 SEEDS = tuple(range(42, 47))
 FAMILY_MIN_FRAC = 0.60
+PRIMARY = {"horizon": 5, "step": 26, "cost_one_way": 0.0004}
+HORIZONS = (5, 21, 63)
+STEPS = (26, 13)
+COSTS = (0.0004, 0.0008)
 MOM_COLS = ["mom_5d", "mom_21d", "mom_63d"]
 SHORTLIST_EXTRA = ["cper_mom_21d", "fcx_mom_63d"]
 GRAPH_SURVIVORS = ["graph_pagerank", "graph_betweenness", "graph_hhi"]
@@ -182,7 +191,7 @@ def emit_graph_features(df: pd.DataFrame) -> pd.DataFrame:
     return pd.concat([work, feats], axis=1)
 
 
-def purged_folds(n: int, embargo: int):
+def purged_folds(n: int, embargo: int, step: int):
     folds = []
     start = TRAIN_MIN
     while start + TEST_SIZE <= n:
@@ -190,7 +199,7 @@ def purged_folds(n: int, embargo: int):
         train_end = test_start - embargo
         if train_end >= 40:
             folds.append((np.arange(0, train_end), np.arange(test_start, test_start + TEST_SIZE)))
-        start += STEP
+        start += step
     return folds
 
 
@@ -205,16 +214,6 @@ def fit_logistic(x_train, y_train, x_test, seed: int):
     return model.predict_proba(scaler.transform(x_test))[:, 1]
 
 
-def arm_row_mask(df: pd.DataFrame, label: str, cols: list[str]) -> np.ndarray:
-    """Rows usable for one arm: finite label ≠ 0 and finite arm features."""
-    label_vals = df[label].to_numpy(dtype=float)
-    label_ok = np.isfinite(label_vals) & (label_vals != 0)
-    if not cols:
-        return label_ok
-    feat = df[cols].to_numpy(dtype=float)
-    return label_ok & np.isfinite(feat).all(axis=1)
-
-
 def positions(proba: np.ndarray) -> np.ndarray:
     pos = np.zeros(len(proba), dtype=float)
     pos[proba >= THR_LONG] = 1.0
@@ -222,9 +221,9 @@ def positions(proba: np.ndarray) -> np.ndarray:
     return pos
 
 
-def turnover_nets(pos: np.ndarray, rets: np.ndarray) -> np.ndarray:
+def turnover_nets(pos: np.ndarray, rets: np.ndarray, cost_one_way: float) -> np.ndarray:
     prev = np.concatenate([np.zeros(1, dtype=float), pos[:-1]])
-    return pos * rets - COST_ONE_WAY * np.abs(pos - prev)
+    return pos * rets - cost_one_way * np.abs(pos - prev)
 
 
 def max_dd(nets: np.ndarray) -> float:
@@ -289,15 +288,34 @@ def present_cols(df: pd.DataFrame, names: list[str]) -> list[str]:
     return [name for name in names if name in df.columns]
 
 
-def run_seed(featured: pd.DataFrame, arms: dict[str, list[str]], seed: int) -> dict:
-    """Score each challenger vs MOM on a shared finite-row mask for that pair."""
-    label = "fwd_ret_5d"
+def arm_row_mask(df: pd.DataFrame, label: str, cols: list[str]) -> np.ndarray:
+    """Rows usable for one arm: finite label ≠ 0 and finite arm features."""
+    label_ok = np.isfinite(df[label].to_numpy(dtype=float)) & (df[label].to_numpy(dtype=float) != 0)
+    if not cols:
+        return label_ok
+    feat = df[cols].to_numpy(dtype=float)
+    feat_ok = np.isfinite(feat).all(axis=1)
+    return label_ok & feat_ok
+
+
+def run_cell(
+    featured: pd.DataFrame,
+    arms: dict[str, list[str]],
+    *,
+    horizon: int,
+    step: int,
+    cost_one_way: float,
+    seed: int,
+) -> dict | None:
+    label = f"fwd_ret_{horizon}d"
+    if label not in featured.columns:
+        return None
+    embargo = max(2, (horizon + 4) // 5)
     mom_cols = arms["mom"]
-    t0 = time.time()
     scores: dict[str, dict] = {}
     arm_verdicts: dict[str, dict] = {}
     arm_n: dict[str, int] = {}
-    n_folds_ref = 0
+    t0 = time.time()
 
     for name, cols in arms.items():
         if name == "mom":
@@ -308,7 +326,6 @@ def run_seed(featured: pd.DataFrame, arms: dict[str, list[str]], seed: int) -> d
         arm_n[name] = int(len(work))
         if len(work) < TRAIN_MIN + TEST_SIZE or not mom_cols:
             scores[name] = score_path([])
-            scores.setdefault("mom", score_path([]))
             arm_verdicts[name] = {
                 "verdict": "KILL",
                 "reasons": ["insufficient_rows"],
@@ -317,59 +334,62 @@ def run_seed(featured: pd.DataFrame, arms: dict[str, list[str]], seed: int) -> d
             continue
         y = (work[label].to_numpy() > 0).astype(int)
         rets = work[label].to_numpy(dtype=float)
-        folds = purged_folds(len(work), embargo=2)
-        n_folds_ref = max(n_folds_ref, len(folds))
+        folds = purged_folds(len(work), embargo=embargo, step=step)
         mom_nets = []
         chal_nets = []
-        for fold_i, (train_idx, test_idx) in enumerate(folds):
+        for train_idx, test_idx in folds:
             x_mom = work[mom_cols].to_numpy(dtype=float)
             x_chal = work[cols].to_numpy(dtype=float)
             mom_proba = fit_logistic(x_mom[train_idx], y[train_idx], x_mom[test_idx], seed)
             chal_proba = fit_logistic(x_chal[train_idx], y[train_idx], x_chal[test_idx], seed)
-            mom_nets.append(turnover_nets(positions(mom_proba), rets[test_idx]))
-            chal_nets.append(turnover_nets(positions(chal_proba), rets[test_idx]))
-            if fold_i == 0 or (fold_i + 1) % 5 == 0 or fold_i + 1 == len(folds):
-                print(
-                    f"[s2tab] seed={seed} arm={name} fold={fold_i + 1}/{len(folds)} "
-                    f"n={len(work)} elapsed_s={time.time() - t0:.0f}",
-                    flush=True,
-                )
+            mom_nets.append(turnover_nets(positions(mom_proba), rets[test_idx], cost_one_way))
+            chal_nets.append(turnover_nets(positions(chal_proba), rets[test_idx], cost_one_way))
         mom_score = score_path(mom_nets)
         chal_score = score_path(chal_nets)
-        # Receipt MOM path: prefer densest pair (usually shortlist_graph_cot).
-        if "mom" not in scores or len(work) >= arm_n.get("mom", 0):
+        if "mom" not in scores or mom_score["n_folds"] >= scores["mom"]["n_folds"]:
             scores["mom"] = mom_score
             arm_n["mom"] = int(len(work))
         scores[name] = chal_score
         verdict, reasons = decide_vs_mom(chal_score, mom_score)
         arm_verdicts[name] = {"verdict": verdict, "reasons": reasons, "promote": False}
 
-    if "mom" not in scores:
-        scores["mom"] = score_path([])
-        arm_n["mom"] = 0
-
-    seed_continue = any(item["verdict"] == "CONTINUE" for item in arm_verdicts.values())
-    best_arm = None
-    best_sum = float("-inf")
-    for name, score in scores.items():
-        if name == "mom":
-            continue
-        if arm_verdicts[name]["verdict"] == "CONTINUE" and score["sum_net"] > best_sum:
-            best_sum = score["sum_net"]
-            best_arm = name
+    if "mom" not in scores or scores["mom"]["n_folds"] == 0:
+        return {
+            "horizon": horizon,
+            "step": step,
+            "cost_one_way": cost_one_way,
+            "seed": seed,
+            "error": "insufficient_mom_folds",
+            "arm_n": arm_n,
+            "promote": False,
+        }
+    headline = arm_verdicts.get("shortlist_graph_cot", {})
     return {
+        "horizon": horizon,
+        "step": step,
+        "cost_one_way": cost_one_way,
         "seed": seed,
-        "verdict": "CONTINUE" if seed_continue else "KILL",
-        "best_continue_arm": best_arm,
-        "arm_verdicts": arm_verdicts,
-        "arms": scores,
+        "embargo": embargo,
         "arm_n": arm_n,
-        "n": int(arm_n.get("mom", 0)),
-        "n_folds": n_folds_ref,
+        "arms": scores,
+        "arm_verdicts": arm_verdicts,
+        "headline_verdict": headline.get("verdict", "KILL"),
         "elapsed_s": round(time.time() - t0, 1),
         "promote": False,
         "compare_note": "each challenger vs MOM on shared finite mask for that pair",
     }
+
+
+def cell_key(horizon: int, step: int, cost_one_way: float) -> str:
+    return f"h{horizon}_step{step}_cost{int(round(cost_one_way * 1e4))}bps"
+
+
+def is_primary(cell: dict) -> bool:
+    return (
+        cell.get("horizon") == PRIMARY["horizon"]
+        and cell.get("step") == PRIMARY["step"]
+        and abs(float(cell.get("cost_one_way", -1)) - PRIMARY["cost_one_way"]) < 1e-12
+    )
 
 
 def main() -> int:
@@ -388,10 +408,9 @@ def main() -> int:
     arms = {
         "mom": mom_cols,
         "shortlist": shortlist,
-        "shortlist_graph": list(dict.fromkeys(shortlist + graph_cols)),
         "shortlist_graph_cot": list(dict.fromkeys(shortlist + graph_cols + cot_cols)),
     }
-    missing_core = [col for col in ["fwd_ret_5d", *MOM_COLS] if col not in featured.columns]
+    available_horizons = [h for h in HORIZONS if f"fwd_ret_{h}d" in featured.columns]
     built = datetime.now(timezone.utc).isoformat()
     panel_meta = {
         "path": str(panel_path),
@@ -401,24 +420,71 @@ def main() -> int:
         "promote": False,
     }
     seed_rows: list[dict] = []
-    if missing_core or not mom_cols or not shortlist:
+    missing_core = [col for col in ["fwd_ret_5d", *MOM_COLS] if col not in featured.columns]
+    if missing_core or not mom_cols or not shortlist or 5 not in available_horizons:
         family = "SHELF"
-        note = f"missing_core={missing_core} mom={mom_cols} shortlist={shortlist}"
+        note = (
+            f"missing_core={missing_core} mom={mom_cols} shortlist={shortlist} "
+            f"horizons={available_horizons}"
+        )
     else:
+        grid = [
+            (h, step, cost)
+            for h in available_horizons
+            for step in STEPS
+            for cost in COSTS
+        ]
         print(
-            f"[s2tab] n_panel={len(featured)} seeds={len(SEEDS)} step={STEP} "
-            f"arm_sizes={ {key: len(val) for key, val in arms.items()} } "
-            f"graph={graph_cols} cot={cot_cols} "
-            f"(pair-mask vs MOM; nan_to_num)",
+            f"[s2deep] n_panel={len(featured)} seeds={len(SEEDS)} "
+            f"grid={len(grid)} arms={ {k: len(v) for k, v in arms.items()} } "
+            f"graph={graph_cols} cot={cot_cols} horizons={available_horizons}",
             flush=True,
         )
         floor = family_pass_floor(len(SEEDS))
         for seed in SEEDS:
-            print(f"[s2tab] start seed={seed}", flush=True)
-            row = run_seed(featured, arms, seed)
+            print(f"[s2deep] start seed={seed}", flush=True)
+            cells = []
+            for horizon, step, cost in grid:
+                cell = run_cell(
+                    featured,
+                    arms,
+                    horizon=horizon,
+                    step=step,
+                    cost_one_way=cost,
+                    seed=seed,
+                )
+                if cell is None:
+                    continue
+                cell["cell_key"] = cell_key(horizon, step, cost)
+                cells.append(cell)
+                print(
+                    f"[s2deep] seed={seed} {cell['cell_key']} "
+                    f"headline={cell.get('headline_verdict')} "
+                    f"elapsed_s={cell.get('elapsed_s')}",
+                    flush=True,
+                )
+            primary = next((c for c in cells if is_primary(c)), None)
+            alt_ok = [
+                c
+                for c in cells
+                if not is_primary(c) and c.get("headline_verdict") == "CONTINUE"
+            ]
+            primary_ok = bool(primary and primary.get("headline_verdict") == "CONTINUE")
+            # Family gate = primary only. Alts are stress diagnostics.
+            seed_continue = primary_ok
+            row = {
+                "seed": seed,
+                "verdict": "CONTINUE" if seed_continue else "KILL",
+                "primary_ok": primary_ok,
+                "n_alt_continue": len(alt_ok),
+                "alt_continue_keys": [c["cell_key"] for c in alt_ok],
+                "primary": primary,
+                "cells": cells,
+                "promote": False,
+            }
             seed_rows.append(row)
             n_ok = sum(1 for item in seed_rows if item.get("verdict") == "CONTINUE")
-            (OUT_DIR / "copper_s2_tabular_survivors_memo.json").write_text(
+            (OUT_DIR / "copper_s2_tabular_deep_memo.json").write_text(
                 json.dumps(
                     {
                         "promote": False,
@@ -432,7 +498,8 @@ def main() -> int:
                             {
                                 "seed": item.get("seed"),
                                 "verdict": item.get("verdict"),
-                                "best_continue_arm": item.get("best_continue_arm"),
+                                "primary_ok": item.get("primary_ok"),
+                                "n_alt_continue": item.get("n_alt_continue"),
                             }
                             for item in seed_rows
                         ],
@@ -442,56 +509,53 @@ def main() -> int:
                 )
             )
             print(
-                f"[s2tab] done seed={seed} verdict={row.get('verdict')} "
-                f"best={row.get('best_continue_arm')} "
+                f"[s2deep] done seed={seed} verdict={row['verdict']} "
+                f"primary_ok={primary_ok} alt={len(alt_ok)} "
                 f"running={n_ok}/{len(seed_rows)} floor={floor}",
                 flush=True,
             )
         n_ok = sum(1 for row in seed_rows if row.get("verdict") == "CONTINUE")
         family = "CONTINUE" if n_ok >= floor else "KILL"
-        note = f"seeds_continue={n_ok}/{len(SEEDS)} floor={floor}"
+        note = f"seeds_continue={n_ok}/{len(SEEDS)} floor={floor} headline=shortlist_graph_cot"
 
-    arm_continue_counts = {
-        name: sum(
-            1
-            for row in seed_rows
-            if (row.get("arm_verdicts") or {}).get(name, {}).get("verdict") == "CONTINUE"
-        )
-        for name in ("shortlist", "shortlist_graph", "shortlist_graph_cot")
-    }
     metrics = {
         "promote": False,
         "NOT_A_PROMOTE": True,
         "version": VERSION,
         "built_at_utc": built,
-        "prior_gnn": {
+        "prior": {
+            "survivors_v0": "CONTINUE_5/5",
             "s2gate": "KILL_0/20",
             "s2ablate": "KILL_0/5",
-            "note": "GAT closed; this cell is tabular survivors only",
+            "note": "GAT closed; deep stress is tabular only",
         },
         "gate": (
-            "CONTINUE if arm beats MOM_ONLY on costed sum_net AND "
-            "maxDD not > baseline+5pp AND sign-stable >=3/5 last folds (v1 gate); "
-            f"family CONTINUE if >={FAMILY_MIN_FRAC:.0%} of {len(SEEDS)} seeds"
+            "PRIMARY only (h5/step26/4bps): shortlist_graph_cot beats MOM on "
+            "costed sum_net AND maxDD not > baseline+5pp AND sign-stable >=3/5; "
+            f"family CONTINUE if >={FAMILY_MIN_FRAC:.0%} of {len(SEEDS)} seeds "
+            "pass primary. Alternate horizon/step/cost cells are diagnostic only."
         ),
         "panel": panel_meta,
-        "step": STEP,
+        "primary": PRIMARY,
+        "horizons": available_horizons if not missing_core else [],
+        "steps": list(STEPS),
+        "costs": list(COSTS),
         "seeds": list(SEEDS),
         "arms_cols": {key: list(val) for key, val in arms.items()},
         "graph_survivors_frozen": GRAPH_SURVIVORS,
         "cot_survivors_frozen": COT_SURVIVORS,
         "family_pass_floor": family_pass_floor(len(SEEDS)),
         "seed_rows": seed_rows,
-        "arm_continue_counts": arm_continue_counts,
         "n_seeds_continue": sum(1 for row in seed_rows if row.get("verdict") == "CONTINUE"),
         "n_seeds": len(SEEDS),
         "verdict": family,
         "note": note,
-        "compare_note": (
-            "Each challenger CONTINUE uses MOM scored on the same finite "
-            "mask as that challenger. Receipt arms.mom is the densest-pair "
-            "MOM path (usually shortlist_graph_cot mask), for display only."
-        ),
+        "code_notes": [
+            "challenger vs MOM on shared finite mask for that pair",
+            "nan_to_num before StandardScaler",
+            "seed-invariant logistic expected; grid is the stress",
+            "step=13 / h21 / h63 / 8bps do not gate family CONTINUE",
+        ],
     }
     memo = {
         "verdict": family,
@@ -501,41 +565,40 @@ def main() -> int:
         "sha_note": panel_meta["sha_note"],
         "n_seeds_continue": metrics["n_seeds_continue"],
         "n_seeds": len(SEEDS),
-        "arm_continue_counts": arm_continue_counts,
         "note": note,
         "seed_verdicts": [
             {
                 "seed": row.get("seed"),
                 "verdict": row.get("verdict"),
-                "best_continue_arm": row.get("best_continue_arm"),
-                "arm_verdicts": row.get("arm_verdicts"),
+                "primary_ok": row.get("primary_ok"),
+                "n_alt_continue": row.get("n_alt_continue"),
+                "alt_continue_keys": row.get("alt_continue_keys"),
             }
             for row in seed_rows
         ],
         "paths": {
-            "metrics": str(OUT_DIR / "copper_s2_tabular_survivors_metrics.json"),
-            "memo": str(OUT_DIR / "copper_s2_tabular_survivors_memo.json"),
+            "metrics": str(OUT_DIR / "copper_s2_tabular_deep_metrics.json"),
+            "memo": str(OUT_DIR / "copper_s2_tabular_deep_memo.json"),
         },
     }
     receipt = (
         f"Verdict: {family} (promote=false) version={VERSION}\n"
         f"sha12={panel_sha[:12]} {panel_meta['sha_note']}\n"
         f"{note}\n"
-        f"arm_continue_counts={arm_continue_counts}\n"
+        f"primary={PRIMARY}\n"
         f"no_gat=True\n"
     )
-    (OUT_DIR / "copper_s2_tabular_survivors_metrics.json").write_text(
+    (OUT_DIR / "copper_s2_tabular_deep_metrics.json").write_text(
         json.dumps(metrics, indent=2, default=str)
     )
-    (OUT_DIR / "copper_s2_tabular_survivors_memo.json").write_text(
+    (OUT_DIR / "copper_s2_tabular_deep_memo.json").write_text(
         json.dumps(memo, indent=2, default=str)
     )
-    (OUT_DIR / "copper_s2_tabular_survivors_receipt.txt").write_text(receipt)
+    (OUT_DIR / "copper_s2_tabular_deep_receipt.txt").write_text(receipt)
     print(json.dumps(memo, indent=2, default=str), flush=True)
     print("RECEIPT:\n" + receipt, flush=True)
     return 0
 
 
 if __name__ == "__main__":
-    # Return without SystemExit so Kaggle/IPython does not warn on success.
     main()
