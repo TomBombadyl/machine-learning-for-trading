@@ -61,6 +61,9 @@ Research inputs and generated artifacts live under `data/synap/copper/`.
 | `copper_gnn_s2gate_kaggle.py` | Cell 1 deep **KILL** `0/20` (sign_stable 0/5). **Do not rerun.** |
 | `copper_gnn_s2ablate_kaggle.py` | S2 ablate **KILL** `0/5` (`best_epoch_cap=50`). **Do not rerun.** Cell 2 closed under this hyp. `promote=false`. |
 | `copper_s2_tabular_survivors_kaggle.py` | **Stamped CONTINUE 5/5** (2026-09-20). Logistic arms: MOM / shortlist / +graph / +graph+cot. v1 WF. `promote=false`. Do not treat as paper lock. |
+| `copper_s2_tabular_deep_kaggle.py` | Stress grid (horizons/step/cost) on `shortlist_graph_cot`. Primary-only family gate. No GAT. `promote=false`. |
+| `copper_s2_tabular_marathon_kaggle.py` | **Stamped CONTINUE 10/10** (2026-09-20). 21 topology emits + cost/thr/C/LOO grid. Primary-only gate. No GAT. `promote=false`. Do not treat as paper lock. |
+| `copper_s2_tabular_focus_kaggle.py` | **Next paste (v1.1).** Shrunk 12 topologies, primary first, mid-job atomic memo + heartbeat + early `primary_gate` file. See `docs/synap/KAGGLE_LONG_RUN.md`. No GAT. |
 
 Shared candidate IDs and kill-criteria helpers live in `contract.py`.
 That module is also **not a promote**.
