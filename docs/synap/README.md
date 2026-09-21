@@ -24,6 +24,7 @@ agents should read before touching chapters or case studies.
 | [KAGGLE_LONG_RUN.md](KAGGLE_LONG_RUN.md) | Persistence + Output download checklist for multi-hour paste cells |
 | [FOCUS_STALL_EXTRACT_2026-09-21.md](FOCUS_STALL_EXTRACT_2026-09-21.md) | focus_v0 stall salvage; `results.zip` = v0 KILL reconfirm |
 | [JEV_DECISION_LAYER_ONTOLOGY.md](JEV_DECISION_LAYER_ONTOLOGY.md) | Jev/TypeSafe agree-veto layer draft; does not replace WF |
+| [AGENT_HANDOFF_FOCUS_RETURN_2026-09-21.md](AGENT_HANDOFF_FOCUS_RETURN_2026-09-21.md) | Paste-ready return handoff after focus long run |
 
 ## Bot ownership (10 lines)
 
