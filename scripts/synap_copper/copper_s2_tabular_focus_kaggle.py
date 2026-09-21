@@ -719,23 +719,106 @@ def main() -> int:
                                 if k != "fold_net"
                             }
                     compact_hits.append(ch)
-                cells_out.append(
-                    {
-                        "cell_key": cell_key(meta),
-                        **meta,
-                        "n_seeds_continue": n_cont,
-                        "n_seeds": len(SEEDS),
-                        "is_primary": is_primary(meta),
-                        "seed_hits": compact_hits,
-                        "promote": False,
-                    }
-                )
+                cell_row = {
+                    "cell_key": cell_key(meta),
+                    **meta,
+                    "n_seeds_continue": n_cont,
+                    "n_seeds": len(SEEDS),
+                    "is_primary": is_primary(meta),
+                    "seed_hits": compact_hits,
+                    "promote": False,
+                }
+                cells_out.append(cell_row)
+                # Crash-safe: append every CONTINUE (or primary) to jsonl
+                if n_cont > 0 or is_primary(meta):
+                    with open(OUT_DIR / "copper_s2_tabular_focus_hits.jsonl", "a") as hit_f:
+                        hit_f.write(
+                            json.dumps(
+                                {
+                                    "topo_i": topo_i,
+                                    "job_i": job_i,
+                                    "n_jobs": len(uniq),
+                                    "elapsed_run_s": round(time.time() - t_run, 1),
+                                    "n_seeds_continue": n_cont,
+                                    "is_primary": is_primary(meta),
+                                    "cell_key": cell_row["cell_key"],
+                                    "horizon": meta["horizon"],
+                                    "lookback": meta["lookback"],
+                                    "corr_min": meta["corr_min"],
+                                    "cost_one_way": meta["cost_one_way"],
+                                    "thr_long": meta["thr_long"],
+                                    "thr_short": meta["thr_short"],
+                                    "C": meta["C"],
+                                    "train_mode": meta["train_mode"],
+                                    "arm": meta["arm"],
+                                    "loo_drop": meta.get("loo_drop"),
+                                    "mean_lift": round(
+                                        float(
+                                            np.mean(
+                                                [
+                                                    h.get("lift_sum_net")
+                                                    for h in seed_hits
+                                                    if isinstance(h.get("lift_sum_net"), (int, float))
+                                                ]
+                                                or [0.0]
+                                            )
+                                        ),
+                                        6,
+                                    ),
+                                    "promote": False,
+                                }
+                            )
+                            + "\n"
+                        )
                 if job_i == 1 or job_i % 25 == 0 or job_i == len(uniq):
                     print(
                         f"[focus] topo {topo_i}/{n_topo} job={job_i}/{len(uniq)} "
                         f"{cell_key(meta)[:80]}… cont={n_cont}/{len(SEEDS)} "
                         f"run_s={time.time() - t_run:.0f}",
                         flush=True,
+                    )
+                    # Mid-topology memo so a stall still leaves a download
+                    seed_verdicts = []
+                    for seed in SEEDS:
+                        hit = primary_by_seed.get(seed) or {}
+                        seed_verdicts.append(
+                            {
+                                "seed": seed,
+                                "verdict": hit.get("verdict", "PENDING"),
+                                "primary_ok": hit.get("verdict") == "CONTINUE",
+                                "lift_sum_net": hit.get("lift_sum_net"),
+                            }
+                        )
+                    write_partial(
+                        {
+                            "promote": False,
+                            "version": VERSION,
+                            "partial": True,
+                            "topo_done": topo_i - 1,
+                            "topo_in_progress": topo_i,
+                            "topo_total": n_topo,
+                            "job_i": job_i,
+                            "n_jobs": len(uniq),
+                            "lookback": lookback,
+                            "corr_min": corr_min,
+                            "elapsed_run_s": round(time.time() - t_run, 1),
+                            "n_seeds_continue_primary": sum(
+                                1 for r in seed_verdicts if r.get("verdict") == "CONTINUE"
+                            ),
+                            "n_seeds": len(SEEDS),
+                            "family_pass_floor": floor,
+                            "available_horizons": available_horizons,
+                            "derived_fwd_ret": derived_labels,
+                            "top_lifts": rank_rows(diagnostic_hits, "lift_sum_net"),
+                            "recent_continue_keys": [
+                                c["cell_key"]
+                                for c in cells_out
+                                if c.get("n_seeds_continue", 0) > 0
+                            ][-40:],
+                            "seed_verdicts": seed_verdicts,
+                            "panel_sha12": panel_sha[:12],
+                            "hits_jsonl": str(OUT_DIR / "copper_s2_tabular_focus_hits.jsonl"),
+                        }
                     )
 
             topology_rows.append(
